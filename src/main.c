@@ -24,6 +24,7 @@
 #include "encoder.h"
 #include "lcd.h"
 #include "sequence.h"
+#include "ui.h"
 #include "main.h"
 
 #define WATCHDOG_PERIOD_MS 100
@@ -34,6 +35,7 @@ int main(void) {
     buttons_init();
     lcd_init();
     sequence_init();
+    ui_init();
     printf("init done\n");
 
     while (1) {
@@ -41,6 +43,7 @@ int main(void) {
         buttons_run();
         encoder_run();
         sequence_run();
+        ui_run();
     }
 
     return 0;

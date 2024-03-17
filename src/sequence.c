@@ -44,9 +44,17 @@ void sequence_set_beats(uint32_t new_beats) {
     beats = (new_beats <= MAX_BEATS) ? new_beats : MAX_BEATS;
 }
 
-void sequence_set(uint32_t beat, bool value) {
+static void sequence_set(uint32_t beat, bool value) {
     if (beat < MAX_BEATS) {
         sequence[beat] = value;
+    }
+}
+
+void sequence_handle_button(enum buttons btn, bool rec) {
+    // TODO trigger gpio impulse
+
+    if (rec) {
+
     }
 }
 

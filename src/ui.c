@@ -1,5 +1,5 @@
 /*
- * sequence.h
+ * ui.c
  *
  * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
  *
@@ -16,16 +16,39 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __SEQUENCE_H__
-#define __SEQUENCE_H__
+#include "pico/stdlib.h"
 
-#include <stdint.h>
 #include "buttons.h"
+#include "ui.h"
 
-void sequence_init(void);
-void sequence_set_bpm(uint32_t new_bpm);
-void sequence_set_beats(uint32_t new_beats);
-void sequence_handle_button(enum buttons btn, bool rec);
-void sequence_run(void);
+static bool rec_held_down = false;
 
-#endif // __SEQUENCE_H__
+static void ui_buttons(enum buttons btn, bool val) {
+    switch (btn) {
+        case BTN_A:
+        case BTN_B:
+        case BTN_C:
+            if (val) {
+                sequence_handle_button(btn, rec_held_down);
+            }
+            break;
+
+        case BTN_REC:
+            rec_held_down = val;
+            break;
+
+        case BTN_CLICK:
+            break;
+
+        default:
+            break;
+    }
+}
+
+void ui_init(void) {
+    buttons_callback(ui_buttons);
+}
+
+void ui_run(void) {
+
+}

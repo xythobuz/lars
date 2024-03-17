@@ -28,7 +28,7 @@
 static ssd1306_t disp;
 
 void lcd_init(void) {
-    i2c_init(i2c1, 400000);
+    i2c_init(i2c1, 1000 * 1000);
     gpio_set_function(0, GPIO_FUNC_I2C);
     gpio_set_function(1, GPIO_FUNC_I2C);
     gpio_pull_up(0);

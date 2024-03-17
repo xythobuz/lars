@@ -19,6 +19,9 @@
 #ifndef __LED_H__
 #define __LED_H__
 
+#include <stdint.h>
+#include <stdbool.h>
+
 void led_init(void);
 void led_set(uint32_t i, bool v);
 

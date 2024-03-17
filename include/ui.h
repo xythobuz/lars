@@ -1,5 +1,5 @@
 /*
- * sequence.h
+ * ui.h
  *
  * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
  *
@@ -16,16 +16,10 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __SEQUENCE_H__
-#define __SEQUENCE_H__
+#ifndef __UI_H__
+#define __UI_H__
 
-#include <stdint.h>
-#include "buttons.h"
+void ui_init(void);
+void ui_run(void);
 
-void sequence_init(void);
-void sequence_set_bpm(uint32_t new_bpm);
-void sequence_set_beats(uint32_t new_beats);
-void sequence_handle_button(enum buttons btn, bool rec);
-void sequence_run(void);
-
-#endif // __SEQUENCE_H__
+#endif // __UI_H__
