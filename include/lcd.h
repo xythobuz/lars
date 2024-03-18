@@ -19,6 +19,9 @@
 #ifndef __LCD_H__
 #define __LCD_H__
 
+#define LCD_WIDTH 128
+#define LCD_HEIGHT 64
+
 void lcd_init(void);
 
 #endif // __LCD_H__

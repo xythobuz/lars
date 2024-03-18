@@ -29,7 +29,7 @@ static uint32_t beats = 16;
 static uint32_t last_t = 0;
 static uint32_t last_i = 0;
 
-static bool sequence[MAX_BEATS] = {0};
+static enum channels sequence[MAX_BEATS] = {0};
 
 void sequence_init(void) {
     last_t = to_ms_since_boot(get_absolute_time());
@@ -44,17 +44,81 @@ void sequence_set_beats(uint32_t new_beats) {
     beats = (new_beats <= MAX_BEATS) ? new_beats : MAX_BEATS;
 }
 
-static void sequence_set(uint32_t beat, bool value) {
+static void sequence_set(uint32_t beat, enum channels ch, bool value) {
     if (beat < MAX_BEATS) {
-        sequence[beat] = value;
+        if (value) {
+            sequence[beat] |= ch;
+        } else {
+            sequence[beat] &= ~ch;
+        }
     }
 }
 
-void sequence_handle_button(enum buttons btn, bool rec) {
-    // TODO trigger gpio impulse
+static bool sequence_get(uint32_t beat, enum channels ch) {
+    if (beat < MAX_BEATS) {
+        return (sequence[beat] & ch) != 0;
+    }
+    return false;
+}
+
+void sequence_handle_button_loopstation(enum buttons btn, bool rec) {
+    switch (btn) {
+    case BTN_A:
+        // TODO trigger gpio impulse
+        break;
+
+    case BTN_B:
+        // TODO trigger gpio impulse
+        break;
+
+    case BTN_C:
+        // TODO trigger gpio impulse
+        break;
+
+    default:
+        break;
+    }
 
     if (rec) {
+        uint32_t beat = 42; // TODO!!
 
+        switch (btn) {
+        case BTN_A:
+            sequence_set(beat, CH_KICK, true);
+            break;
+
+        case BTN_B:
+            sequence_set(beat, CH_SNARE, true);
+            break;
+
+        case BTN_C:
+            sequence_set(beat, CH_HIHAT, true);
+            break;
+
+        default:
+            break;
+        }
+    }
+}
+
+void sequence_handle_button_drummachine(enum buttons btn) {
+    uint32_t beat = 42; // TODO!!
+
+    switch (btn) {
+    case BTN_A:
+        sequence_set(beat, CH_KICK, !sequence_get(beat, CH_KICK));
+        break;
+
+    case BTN_B:
+        sequence_set(beat, CH_SNARE, !sequence_get(beat, CH_SNARE));
+        break;
+
+    case BTN_C:
+        sequence_set(beat, CH_HIHAT, !sequence_get(beat, CH_HIHAT));
+        break;
+
+    default:
+        break;
     }
 }
 

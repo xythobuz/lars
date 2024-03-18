@@ -30,12 +30,13 @@ pico_sdk_init()
 add_executable(drumkit)
 
 target_sources(drumkit PUBLIC
-    src/main.c
-    src/lcd.c
     src/buttons.c
     src/encoder.c
-    src/sequence.c
+    src/lcd.c
     src/led.c
+    src/main.c
+    src/sequence.c
+    src/ui.c
 
     pico-ssd1306/ssd1306.c
 )

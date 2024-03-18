@@ -25,15 +25,19 @@
 #include "ssd1306.h"
 #include "lcd.h"
 
+#define LCD_I2C i2c1
+static const uint gpio_num[2] = { 0, 1 };
+#define LCD_ADDR 0x3C
+
 static ssd1306_t disp;
 
 void lcd_init(void) {
-    i2c_init(i2c1, 1000 * 1000);
-    gpio_set_function(0, GPIO_FUNC_I2C);
-    gpio_set_function(1, GPIO_FUNC_I2C);
-    gpio_pull_up(0);
-    gpio_pull_up(1);
+    i2c_init(LCD_I2C, 1000 * 1000);
+    for (uint i = 0; i < sizeof(gpio_num) / sizeof(gpio_num[0]); i++) {
+        gpio_set_function(gpio_num[i], GPIO_FUNC_I2C);
+        gpio_pull_up(gpio_num[i]);
+    }
 
     disp.external_vcc = false;
-    ssd1306_init(&disp, 128, 64, 0x3C, i2c1);
+    ssd1306_init(&disp, LCD_WIDTH, LCD_HEIGHT, LCD_ADDR, LCD_I2C);
 }

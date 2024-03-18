@@ -19,7 +19,22 @@
 #ifndef __UI_H__
 #define __UI_H__
 
+enum ui_modes {
+    UI_BPM = 0,
+    UI_MODE,
+    UI_LENGTH,
+    UI_BANK,
+
+    UI_NUM_MODES
+};
+
+enum machine_modes {
+    MODE_LOOPSTATION = 0,
+    MODE_DRUMMACHINE,
+
+    MACHINE_NUM_MODES
+};
+
 void ui_init(void);
-void ui_run(void);
 
 #endif // __UI_H__

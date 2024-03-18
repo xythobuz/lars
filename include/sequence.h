@@ -22,10 +22,22 @@
 #include <stdint.h>
 #include "buttons.h"
 
+enum channels {
+    CH1 = (1 << 0),
+    CH_KICK = CH1,
+
+    CH2 = (1 << 1),
+    CH_SNARE = CH2,
+
+    CH3 = (1 << 2),
+    CH_HIHAT = CH3,
+};
+
 void sequence_init(void);
 void sequence_set_bpm(uint32_t new_bpm);
 void sequence_set_beats(uint32_t new_beats);
-void sequence_handle_button(enum buttons btn, bool rec);
+void sequence_handle_button_loopstation(enum buttons btn, bool rec);
+void sequence_handle_button_drummachine(enum buttons btn);
 void sequence_run(void);
 
 #endif // __SEQUENCE_H__

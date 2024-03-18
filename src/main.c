@@ -43,7 +43,6 @@ int main(void) {
         buttons_run();
         encoder_run();
         sequence_run();
-        ui_run();
     }
 
     return 0;

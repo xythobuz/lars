@@ -1,5 +1,26 @@
 # Drumkit
 
+## Quick Start
+
+Initialize your local repo and prepare the build:
+
+    git clone https://git.xythobuz.de/thomas/drumkit.git
+    cd drumkit
+    git submodule update --init
+    cd pico-sdk
+    git submodule update --init
+    cd ..
+    mkdir build
+    cd build
+    cmake ..
+    cd ..
+
+Then you can build new binaries like this:
+
+    make -Cbuild -j4
+
+Flash as usual using the mass storage bootloader of RP2040.
+
 ## Hardware Connections
 
     Pin 1    GP0    I2C SDA
