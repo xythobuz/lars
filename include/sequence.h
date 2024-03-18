@@ -24,16 +24,17 @@
 
 enum channels {
     CH1 = (1 << 0),
-    CH_KICK = CH1,
-
     CH2 = (1 << 1),
-    CH_SNARE = CH2,
-
     CH3 = (1 << 2),
+
+    CH_KICK = CH1,
+    CH_SNARE = CH2,
     CH_HIHAT = CH3,
 
     NUM_CHANNELS = 3
 };
+
+#define CH_GPIO_TIMINGS { 42, 42, 42 } // in milliseconds
 
 void sequence_init(void);
 void sequence_set_bpm(uint32_t new_bpm);

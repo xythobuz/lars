@@ -22,6 +22,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define LED_COUNT 4
+
 void led_init(void);
 void led_set(uint32_t i, bool v);
 void ch_set(uint32_t i, bool v);

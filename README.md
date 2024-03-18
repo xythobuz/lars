@@ -19,7 +19,7 @@ Then you can build new binaries like this:
 
     make -Cbuild -j4
 
-Flash as usual using the mass storage bootloader of RP2040.
+Flash as usual using the mass storage bootloader (hold BOOTSEL while pluggin in the Pico).
 
 ## Hardware Connections
 
@@ -49,7 +49,7 @@ Flash as usual using the mass storage bootloader of RP2040.
 This firmware is licensed as GPLv3.
 It uses the [Pi Pico SDK](https://github.com/raspberrypi/pico-sdk), licensed as BSD 3-clause, and therefore also [TinyUSB](https://github.com/hathach/tinyusb), licensed under the MIT license.
 
-The code in `encoder.c` is derived from [mathertel/RotaryEncoder](https://github.com/mathertel/RotaryEncoder) and therefore licensed as BSD 3-clause.
+The code in `src/encoder.c` is derived from [mathertel/RotaryEncoder](https://github.com/mathertel/RotaryEncoder) and therefore licensed as BSD 3-clause.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

@@ -2,6 +2,12 @@
  * encoder.c
  *
  * Based on https://github.com/mathertel/RotaryEncoder/blob/master/src/RotaryEncoder.cpp
+ *
+ * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
+ *
+ * Copyright (c) by Matthias Hertel, http://www.mathertel.de
+ * This work is licensed under a BSD 3-Clause style license
+ * https://www.mathertel.de/License.aspx.
  */
 
 #include <stdio.h>

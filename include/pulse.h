@@ -1,5 +1,5 @@
 /*
- * ui.h
+ * pulse.h
  *
  * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
  *
@@ -16,28 +16,13 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __UI_H__
-#define __UI_H__
+#ifndef __PULSE_H__
+#define __PULSE_H__
 
 #include <stdint.h>
 
-enum ui_modes {
-    UI_BPM = 0,
-    UI_MODE,
-    UI_BANK,
-    UI_LENGTH,
+void pulse_trigger_out(uint32_t i, uint32_t t_ms);
+void pulse_trigger_led(uint32_t i, uint32_t t_ms);
+void pulse_run(void);
 
-    UI_NUM_MODES
-};
-
-enum machine_modes {
-    MODE_LOOPSTATION = 0,
-    MODE_DRUMMACHINE,
-
-    MACHINE_NUM_MODES
-};
-
-void ui_init(void);
-void ui_encoder(int32_t val);
-
-#endif // __UI_H__
+#endif // __PULSE_H__

@@ -21,8 +21,6 @@
 #include "sequence.h"
 #include "led.h"
 
-#define LED_COUNT 4
-
 static const uint led_gpio_num[LED_COUNT] = {
     12, 13, 14, 15,
 };

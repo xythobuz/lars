@@ -20,9 +20,11 @@
 #include "pico/stdlib.h"
 
 #include "led.h"
+#include "pulse.h"
 #include "sequence.h"
 
 #define MAX_BEATS 32
+static const uint32_t channel_times[NUM_CHANNELS] = CH_GPIO_TIMINGS;
 
 static uint32_t ms_per_beat = 500;
 static uint32_t beats = 16;
@@ -68,17 +70,20 @@ static bool sequence_get(uint32_t beat, enum channels ch) {
 void sequence_handle_button_loopstation(enum buttons btn, bool rec) {
     switch (btn) {
         case BTN_A: {
-            // TODO trigger gpio impulse for output and led
+            pulse_trigger_out(0, channel_times[0]);
+            pulse_trigger_led(0, channel_times[0]);
             break;
         }
 
         case BTN_B: {
-            // TODO trigger gpio impulse for output and led
+            pulse_trigger_out(1, channel_times[1]);
+            pulse_trigger_led(1, channel_times[1]);
             break;
         }
 
         case BTN_C: {
-            // TODO trigger gpio impulse for output and led
+            pulse_trigger_out(2, channel_times[2]);
+            pulse_trigger_led(2, channel_times[2]);
             break;
         }
 
@@ -151,8 +156,10 @@ void sequence_run(void) {
         led_set(last_i, false);
         led_set(i, true);
 
-        if (sequence[i]) {
-            // TODO trigger GPIO impulse
+        for (uint ch = 0; ch < NUM_CHANNELS; ch++) {
+            if (sequence[i] & (1 << ch)) {
+                pulse_trigger_out(i, channel_times[ch]);
+            }
         }
 
         last_t = now;

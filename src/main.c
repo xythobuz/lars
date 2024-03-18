@@ -24,6 +24,7 @@
 #include "encoder.h"
 #include "lcd.h"
 #include "led.h"
+#include "pulse.h"
 #include "sequence.h"
 #include "ui.h"
 #include "main.h"
@@ -48,6 +49,7 @@ int main(void) {
         buttons_run();
         encoder_run();
         sequence_run();
+        pulse_run();
 
         int32_t epos = encoder_pos();
         if (epos != last_epos) {
