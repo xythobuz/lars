@@ -19,6 +19,8 @@
 #ifndef __UI_H__
 #define __UI_H__
 
+#include <stdint.h>
+
 enum ui_modes {
     UI_BPM = 0,
     UI_MODE,
@@ -36,5 +38,6 @@ enum machine_modes {
 };
 
 void ui_init(void);
+void ui_encoder(int32_t val);
 
 #endif // __UI_H__

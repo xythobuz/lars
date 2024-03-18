@@ -23,6 +23,7 @@
 #include "buttons.h"
 #include "encoder.h"
 #include "lcd.h"
+#include "led.h"
 #include "sequence.h"
 #include "ui.h"
 #include "main.h"
@@ -33,16 +34,26 @@ int main(void) {
     watchdog_enable(WATCHDOG_PERIOD_MS, 1);
     stdio_init_all();
     buttons_init();
+    encoder_init();
     lcd_init();
+    led_init();
     sequence_init();
     ui_init();
     printf("init done\n");
+
+    int32_t last_epos = 0;
 
     while (1) {
         watchdog_update();
         buttons_run();
         encoder_run();
         sequence_run();
+
+        int32_t epos = encoder_pos();
+        if (epos != last_epos) {
+            ui_encoder(epos - last_epos);
+            last_epos = epos;
+        }
     }
 
     return 0;

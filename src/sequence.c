@@ -34,6 +34,10 @@ static enum channels sequence[MAX_BEATS] = {0};
 void sequence_init(void) {
     last_t = to_ms_since_boot(get_absolute_time());
     last_i = 0;
+
+    for (uint i = 0; i < MAX_BEATS; i++) {
+        sequence[i] = 0;
+    }
 }
 
 void sequence_set_bpm(uint32_t new_bpm) {
@@ -63,40 +67,48 @@ static bool sequence_get(uint32_t beat, enum channels ch) {
 
 void sequence_handle_button_loopstation(enum buttons btn, bool rec) {
     switch (btn) {
-    case BTN_A:
-        // TODO trigger gpio impulse
-        break;
+        case BTN_A: {
+            // TODO trigger gpio impulse for output and led
+            break;
+        }
 
-    case BTN_B:
-        // TODO trigger gpio impulse
-        break;
+        case BTN_B: {
+            // TODO trigger gpio impulse for output and led
+            break;
+        }
 
-    case BTN_C:
-        // TODO trigger gpio impulse
-        break;
+        case BTN_C: {
+            // TODO trigger gpio impulse for output and led
+            break;
+        }
 
-    default:
-        break;
+        default: {
+            break;
+        }
     }
 
     if (rec) {
         uint32_t beat = 42; // TODO!!
 
         switch (btn) {
-        case BTN_A:
-            sequence_set(beat, CH_KICK, true);
-            break;
+            case BTN_A: {
+                sequence_set(beat, CH_KICK, true);
+                break;
+            }
 
-        case BTN_B:
-            sequence_set(beat, CH_SNARE, true);
-            break;
+            case BTN_B: {
+                sequence_set(beat, CH_SNARE, true);
+                break;
+            }
 
-        case BTN_C:
-            sequence_set(beat, CH_HIHAT, true);
-            break;
+            case BTN_C: {
+                sequence_set(beat, CH_HIHAT, true);
+                break;
+            }
 
-        default:
-            break;
+            default: {
+                break;
+            }
         }
     }
 }
@@ -105,20 +117,27 @@ void sequence_handle_button_drummachine(enum buttons btn) {
     uint32_t beat = 42; // TODO!!
 
     switch (btn) {
-    case BTN_A:
-        sequence_set(beat, CH_KICK, !sequence_get(beat, CH_KICK));
-        break;
+        case BTN_A: {
+            bool val = !sequence_get(beat, CH_KICK);
+            sequence_set(beat, CH_KICK, val);
+            break;
+        }
 
-    case BTN_B:
-        sequence_set(beat, CH_SNARE, !sequence_get(beat, CH_SNARE));
-        break;
+        case BTN_B: {
+            bool val = !sequence_get(beat, CH_SNARE);
+            sequence_set(beat, CH_SNARE, val);
+            break;
+        }
 
-    case BTN_C:
-        sequence_set(beat, CH_HIHAT, !sequence_get(beat, CH_HIHAT));
-        break;
+        case BTN_C: {
+            bool val = !sequence_get(beat, CH_HIHAT);
+            sequence_set(beat, CH_HIHAT, val);
+            break;
+        }
 
-    default:
-        break;
+        default: {
+            break;
+        }
     }
 }
 

@@ -43,3 +43,22 @@ Flash as usual using the mass storage bootloader of RP2040.
     Pin 17   GP13   LED 2
     Pin 19   GP14   LED 3
     Pin 20   GP15   LED 4
+
+## License
+
+This firmware is licensed as GPLv3.
+It uses the [Pi Pico SDK](https://github.com/raspberrypi/pico-sdk), licensed as BSD 3-clause, and therefore also [TinyUSB](https://github.com/hathach/tinyusb), licensed under the MIT license.
+
+The code in `encoder.c` is derived from [mathertel/RotaryEncoder](https://github.com/mathertel/RotaryEncoder) and therefore licensed as BSD 3-clause.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    See <http://www.gnu.org/licenses/>.

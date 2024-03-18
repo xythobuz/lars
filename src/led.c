@@ -18,22 +18,36 @@
 
 #include "pico/stdlib.h"
 
+#include "sequence.h"
 #include "led.h"
 
 #define LED_COUNT 4
 
-static const uint gpio_num[LED_COUNT] = {
+static const uint led_gpio_num[LED_COUNT] = {
     12, 13, 14, 15,
+};
+
+static const uint ch_gpio_num[NUM_CHANNELS] = {
+    2, 3, 4,
 };
 
 void led_init(void) {
     for (uint i = 0; i < LED_COUNT; i++) {
-        gpio_init(gpio_num[i]);
-        gpio_set_dir(gpio_num[i], GPIO_IN);
+        gpio_init(led_gpio_num[i]);
+        gpio_set_dir(led_gpio_num[i], GPIO_OUT);
+    }
+    for (uint i = 0; i < NUM_CHANNELS; i++) {
+        gpio_init(ch_gpio_num[i]);
+        gpio_set_dir(ch_gpio_num[i], GPIO_OUT);
     }
 }
 
 void led_set(uint32_t i, bool v) {
     i %= LED_COUNT;
+    gpio_put(i, v);
+}
+
+void ch_set(uint32_t i, bool v) {
+    i %= NUM_CHANNELS;
     gpio_put(i, v);
 }

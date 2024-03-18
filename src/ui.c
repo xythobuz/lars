@@ -30,18 +30,22 @@ static enum machine_modes machine_mode = 0;
 static void ui_redraw(void) {
     switch (ui_mode) {
         case UI_BPM: {
+            // TODO
             break;
         }
 
         case UI_MODE: {
+            // TODO
             break;
         }
 
         case UI_LENGTH: {
+            // TODO
             break;
         }
 
         case UI_BANK: {
+            // TODO
             break;
         }
 
@@ -123,6 +127,41 @@ static void ui_buttons(enum buttons btn, bool val) {
                     break;
                 }
             }
+            break;
+        }
+    }
+}
+
+void ui_encoder(int32_t val) {
+    if (val == 0) {
+        return;
+    }
+
+    switch (ui_mode) {
+        case UI_BPM: {
+            // TODO
+            break;
+        }
+
+        case UI_MODE: {
+            // TODO
+            break;
+        }
+
+        case UI_LENGTH: {
+            // TODO
+            break;
+        }
+
+        case UI_BANK: {
+            // TODO
+            break;
+        }
+
+        default: {
+            printf("%s: invalid mode: %d\n", __func__, ui_mode);
+            ui_mode = 0;
+            ui_encoder(val);
             break;
         }
     }

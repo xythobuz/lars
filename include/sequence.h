@@ -31,6 +31,8 @@ enum channels {
 
     CH3 = (1 << 2),
     CH_HIHAT = CH3,
+
+    NUM_CHANNELS = 3
 };
 
 void sequence_init(void);
