@@ -1,0 +1,16 @@
+{
+    "fileFormatVersion": "1",
+    "parameterSets": {
+        "New set 1": {
+            "air": "1",
+            "beam_width": "7",
+            "hole": "3",
+            "hole_tamb": "23",
+            "id_tamb": "239",
+            "lip": "3",
+            "od_tamb": "251",
+            "part": "outer",
+            "wall": "1.6000000000000001"
+        }
+    }
+}
