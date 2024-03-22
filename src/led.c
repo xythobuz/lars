@@ -22,11 +22,11 @@
 #include "led.h"
 
 static const uint led_gpio_num[LED_COUNT] = {
-    12, 13, 14, 15,
+    10, 11, 13, 15,
 };
 
 static const uint ch_gpio_num[NUM_CHANNELS] = {
-    2, 3, 4,
+    22, 26, 27,
 };
 
 void led_init(void) {

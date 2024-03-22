@@ -24,11 +24,11 @@
 #define DEBOUNCE_DELAY_MS 50
 
 static const uint gpio_num[NUM_BTNS] = {
-    5, // BTN_A
-    6, // BTN_B
-    7, // BTN_C
-    8, // BTN_REC
-    11, // BTN_CLICK
+    8, // BTN_A
+    9, // BTN_B
+    12, // BTN_C
+    14, // BTN_REC
+    16, // BTN_CLICK
 };
 
 struct button_state {
