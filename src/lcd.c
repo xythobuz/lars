@@ -25,7 +25,7 @@
 #include "ssd1306.h"
 #include "lcd.h"
 
-#define LCD_I2C i2c1
+#define LCD_I2C i2c0
 static const uint gpio_num[2] = { 0, 1 };
 #define LCD_ADDR 0x3C
 

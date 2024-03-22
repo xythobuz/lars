@@ -25,7 +25,7 @@
 #define ENCODER_MODE TWO03
 
 static const uint gpio_num[2] = {
-    9, 10
+    17, 18
 };
 
 static const int8_t KNOBDIR[] = {
