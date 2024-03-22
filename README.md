@@ -53,6 +53,8 @@ It uses the [Pi Pico SDK](https://github.com/raspberrypi/pico-sdk), licensed as 
 
 The code in `src/encoder.c` is derived from [mathertel/RotaryEncoder](https://github.com/mathertel/RotaryEncoder) and therefore licensed as BSD 3-clause.
 
+The PCB design uses `Mini360_step_down_converter` library from [rayvburn/KiCad](https://github.com/rayvburn/KiCad/tree/master/Mini360_step_down_converter).
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
