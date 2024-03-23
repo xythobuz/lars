@@ -172,6 +172,7 @@ void sequence_handle_button_drummachine(enum buttons btn) {
 }
 
 void sequence_run(void) {
+    /*
     uint32_t now = to_ms_since_boot(get_absolute_time());
 
     if ((last_t + ms_per_beat) >= now) {
@@ -190,4 +191,5 @@ void sequence_run(void) {
         last_t = now;
         last_i = i;
     }
+    */
 }

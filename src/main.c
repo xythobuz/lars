@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "pico/bootrom.h"
 #include "hardware/watchdog.h"
 
 #include "adc.h"
@@ -32,8 +33,16 @@
 
 #define WATCHDOG_PERIOD_MS 100
 
+static void reset_to_bootloader(void) {
+#ifdef PICO_DEFAULT_LED_PIN
+    reset_usb_boot(1 << PICO_DEFAULT_LED_PIN, 0);
+#else // ! PICO_DEFAULT_LED_PIN
+    reset_usb_boot(0, 0);
+#endif // PICO_DEFAULT_LED_PIN
+}
+
 int main(void) {
-    watchdog_enable(WATCHDOG_PERIOD_MS, 1);
+    //watchdog_enable(WATCHDOG_PERIOD_MS, 1);
     stdio_init_all();
     bat_init();
     buttons_init();
@@ -58,6 +67,13 @@ int main(void) {
         if (epos != last_epos) {
             ui_encoder(epos - last_epos);
             last_epos = epos;
+        }
+
+        int c = getchar_timeout_us(0);
+        if (c == 0x18) {
+            reset_to_bootloader();
+        } else if (c != PICO_ERROR_TIMEOUT) {
+            printf("%c", c);
         }
     }
 

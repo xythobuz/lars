@@ -16,6 +16,8 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
+#include <inttypes.h>
 #include "pico/stdlib.h"
 
 #include "sequence.h"
@@ -42,10 +44,12 @@ void led_init(void) {
 
 void led_set(uint32_t i, bool v) {
     i %= LED_COUNT;
-    gpio_put(i, v);
+    gpio_put(led_gpio_num[i], v);
+    //printf("led %"PRIu32" now %d\n", i, v);
 }
 
 void ch_set(uint32_t i, bool v) {
     i %= NUM_CHANNELS;
-    gpio_put(i, v);
+    gpio_put(ch_gpio_num[i], v);
+    //printf("ch %"PRIu32" now %d\n", i, v);
 }
