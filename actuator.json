@@ -1,0 +1,26 @@
+{
+    "fileFormatVersion": "1",
+    "parameterSets": {
+        "New set 1": {
+            "air": "0.5",
+            "copper_height": "5",
+            "hole": "2",
+            "iron_d": "4",
+            "part": "cap",
+            "slit": "15",
+            "total_length": "50",
+            "wall": "0.80000000000000004"
+        },
+        "New set 2": {
+            "air": "0.5",
+            "copper_height": "5",
+            "hammer_flat": "false",
+            "hole": "2",
+            "iron_d": "4",
+            "part": "spool",
+            "slit": "15",
+            "total_length": "50",
+            "wall": "0.80000000000000004"
+        }
+    }
+}

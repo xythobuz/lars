@@ -35,7 +35,7 @@ hull() for (tr=[[0,0],[-hd/2-offset,0],[-hd/2-offset,vd],[-hd/2,vd]]) translate(
     translate([(i-0.5)*hd,vd-offset]) circle(d=hole);
   }
   }
-#translate([-hd/2-offset-wall/2,height/4-wall,thickness/2])rotate([0,90,0])cylinder(d=hole,h=hd-wall);
-#translate([-hd/2-offset-wall/2,height/2-wall/2,thickness/2])rotate([0,90,0])cylinder(d=hole,h=hd-wall);
-#translate([-hd/2-offset-wall/2,height*3/4,thickness/2])rotate([0,90,0])cylinder(d=hole,h=hd-wall);
+translate([-hd/2-offset-wall/2,height/4-wall,thickness/2])rotate([0,90,0])cylinder(d=hole,h=hd-wall);
+translate([-hd/2-offset-wall/2,height/2-wall/2,thickness/2])rotate([0,90,0])cylinder(d=hole,h=hd-wall);
+translate([-hd/2-offset-wall/2,height*3/4,thickness/2])rotate([0,90,0])cylinder(d=hole,h=hd-wall);
 }
