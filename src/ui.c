@@ -17,35 +17,66 @@
  */
 
 #include <stdio.h>
+#include <inttypes.h>
 #include "pico/stdlib.h"
 
+#include "adc.h"
 #include "buttons.h"
+#include "lcd.h"
 #include "sequence.h"
 #include "ui.h"
+
+#define REDRAW_MS 2000
 
 static bool rec_held_down = false;
 static enum ui_modes ui_mode = 0;
 static enum machine_modes machine_mode = 0;
+static uint32_t last_redraw = 0;
 
 static void ui_redraw(void) {
+    char mode[64] = {0};
+    char val[64] = {0};
+    char bat[64] = {0};
+
     switch (ui_mode) {
         case UI_BPM: {
-            // TODO
+            snprintf(mode, sizeof(mode) - 1, "BPM:");
+            snprintf(val, sizeof(val) - 1, "%"PRIu32, sequence_get_bpm());
             break;
         }
 
         case UI_MODE: {
-            // TODO
+            snprintf(mode, sizeof(mode) - 1, "Mode:");
+            switch (machine_mode) {
+                case MODE_LOOPSTATION: {
+                    snprintf(val, sizeof(val) - 1, "Loop");
+                    break;
+                }
+
+                case MODE_DRUMMACHINE: {
+                    snprintf(val, sizeof(val) - 1, "Drum");
+                    break;
+                }
+
+                default: {
+                    printf("%s: invalid mode: %d\n", __func__, machine_mode);
+                    machine_mode = 0;
+                    ui_redraw();
+                    return;
+                }
+            }
             break;
         }
 
         case UI_LENGTH: {
-            // TODO
+            snprintf(mode, sizeof(mode) - 1, "Length:");
+            snprintf(val, sizeof(val) - 1, "%"PRIu32, sequence_get_beats());
             break;
         }
 
         case UI_BANK: {
-            // TODO
+            snprintf(mode, sizeof(mode) - 1, "Bank:");
+            snprintf(val, sizeof(val) - 1, "%"PRIu32, sequence_get_bank());
             break;
         }
 
@@ -53,9 +84,12 @@ static void ui_redraw(void) {
             printf("%s: invalid mode: %d\n", __func__, ui_mode);
             ui_mode = 0;
             ui_redraw();
-            break;
+            return;
         }
     }
+
+    snprintf(bat, sizeof(bat) - 1, "Bat: %.2fV", bat_get());
+    lcd_draw(mode, val, bat);
 }
 
 static void ui_buttons_loopstation(enum buttons btn, bool val) {
@@ -103,8 +137,10 @@ static void ui_buttons_drummachine(enum buttons btn, bool val) {
 static void ui_buttons(enum buttons btn, bool val) {
     switch (btn) {
         case BTN_CLICK: {
-            ui_mode = (ui_mode + 1) % UI_NUM_MODES;
-            ui_redraw();
+            if (val) {
+                ui_mode = (ui_mode + 1) % UI_NUM_MODES;
+                ui_redraw();
+            }
             break;
         }
 
@@ -139,22 +175,22 @@ void ui_encoder(int32_t val) {
 
     switch (ui_mode) {
         case UI_BPM: {
-            // TODO
+            sequence_set_bpm(sequence_get_bpm() + val);
             break;
         }
 
         case UI_MODE: {
-            // TODO
+            machine_mode = (machine_mode + val) % MACHINE_NUM_MODES;
             break;
         }
 
         case UI_LENGTH: {
-            // TODO
+            sequence_set_beats(sequence_get_beats() + val);
             break;
         }
 
         case UI_BANK: {
-            // TODO
+            sequence_set_bank(sequence_get_bank() + val);
             break;
         }
 
@@ -162,12 +198,22 @@ void ui_encoder(int32_t val) {
             printf("%s: invalid mode: %d\n", __func__, ui_mode);
             ui_mode = 0;
             ui_encoder(val);
-            break;
+            return;
         }
     }
+
+    ui_redraw();
 }
 
 void ui_init(void) {
     buttons_callback(ui_buttons);
     ui_redraw();
+}
+
+void ui_run(void) {
+    uint32_t now = to_ms_since_boot(get_absolute_time());
+    if (now >= (last_redraw + REDRAW_MS)) {
+        ui_redraw();
+        last_redraw = now;
+    }
 }

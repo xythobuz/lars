@@ -22,7 +22,7 @@
 #define FOUR0 2 // 4 steps, Latch at position 0 (reverse wirings)
 #define TWO03 3 // 2 steps, Latch at position 0 and 3
 
-#define ENCODER_MODE TWO03
+#define ENCODER_MODE FOUR3
 
 static const uint gpio_num[2] = {
     17, 18
@@ -70,6 +70,7 @@ void encoder_run(void) {
             if (thisState == LATCH3) {
                 // The hardware has 4 steps with a latch on the input state 3
                 positionExt = position >> 2;
+                positionExt = -positionExt;
             }
             break;
 
@@ -77,6 +78,7 @@ void encoder_run(void) {
             if (thisState == LATCH0) {
                 // The hardware has 4 steps with a latch on the input state 0
                 positionExt = position >> 2;
+                positionExt = -positionExt;
             }
             break;
 
@@ -84,6 +86,7 @@ void encoder_run(void) {
             if ((thisState == LATCH0) || (thisState == LATCH3)) {
                 // The hardware has 2 steps with a latch on the input state 0 and 3
                 positionExt = position >> 1;
+                positionExt = -positionExt;
             }
             break;
         }

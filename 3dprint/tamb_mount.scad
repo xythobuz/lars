@@ -2,15 +2,15 @@ $fa=1/1;
 $fs=1/2;
 bissl=1/100;
 part="inner";//[inner,outer,all_visualize]
-od_tamb=251;
-id_tamb=239;
-wall_tamb=(od_tamb-id_tamb)/2;
-hole_tamb=23;
-lip=3;
-air=1;
-hole=3;
-wall=1.6;
-beam_width=7;
+od_tamb=251;//tambourine rim outer diameter
+id_tamb=239;//tambourine rim inner diameter
+wall_tamb=(od_tamb-id_tamb)/2; //tambourine wall
+hole_tamb=23; //holding hole in the rim
+lip=3; //extra plastic that hols to the hole
+air=1; //wiggle room
+hole=3; //diameter for screw hole
+beam_width=7; //slit in inner part of mount to hod the beam
+wall=1.6;//thinnest part in the mount, namely the slit to tune the beam mounting height
 module inner_mount() {
   difference() {
     union() {
@@ -30,7 +30,6 @@ module inner_mount() {
     translate([-beam_width/2-air/2,-hole_tamb/2-lip,-bissl]) cube([beam_width+air,hole_tamb+2*lip,lip]);
   }
 }
-
 module outer_mount() {
   difference() {
     union() {
@@ -54,4 +53,4 @@ if (part=="outer") outer_mount();
 if (part=="all_visualize") {
   inner_mount();
   translate([0,0,wall_tamb+3*lip])rotate([180,0,0])outer_mount();
-  }
+}

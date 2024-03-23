@@ -35,4 +35,3 @@ void buttons_callback(void (*fp)(enum buttons, bool));
 void buttons_run(void);
 
 #endif // __BUTTONS_H__
-

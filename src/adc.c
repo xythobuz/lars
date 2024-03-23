@@ -1,5 +1,5 @@
 /*
- * lcd.h
+ * adc.c
  *
  * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
  *
@@ -16,13 +16,32 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __LCD_H__
-#define __LCD_H__
+#include <stdio.h>
+#include "pico/stdlib.h"
+#include "hardware/adc.h"
 
-#define LCD_WIDTH 128
-#define LCD_HEIGHT 64
+#include "adc.h"
 
-void lcd_init(void);
-void lcd_draw(const char *mode, const char *val, const char *bat);
+#define ADC_NUM 2
+#define ADC_PIN (26 + ADC_NUM)
 
-#endif // __LCD_H__
+#define ADC_VREF 3.3
+#define ADC_RANGE (1 << 12)
+#define ADC_CONVERT (ADC_VREF / (ADC_RANGE - 1))
+
+#define BAT_R1 10000.0f
+#define BAT_R2 18000.0f
+
+void bat_init(void) {
+    adc_init();
+    adc_gpio_init( ADC_PIN);
+    adc_select_input( ADC_NUM);
+}
+
+float bat_get(void) {
+    float v_adc = adc_read() * ADC_CONVERT;
+
+    // Vadc = Vbat * R2 / (R1 + R2)
+    float v_bat = v_adc / (BAT_R2 / (BAT_R1 + BAT_R2));
+    return v_bat;
+}

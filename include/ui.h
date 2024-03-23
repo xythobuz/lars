@@ -39,5 +39,6 @@ enum machine_modes {
 
 void ui_init(void);
 void ui_encoder(int32_t val);
+void ui_run(void);
 
 #endif // __UI_H__

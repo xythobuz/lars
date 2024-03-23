@@ -1,7 +1,7 @@
 /*
- * lcd.h
+ * adc.h
  *
- * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2022 - 2023 Thomas Buck (thomas@xythobuz.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +16,10 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __LCD_H__
-#define __LCD_H__
+#ifndef __ADC_H__
+#define __ADC_H__
 
-#define LCD_WIDTH 128
-#define LCD_HEIGHT 64
+void bat_init(void);
+float bat_get(void);
 
-void lcd_init(void);
-void lcd_draw(const char *mode, const char *val, const char *bat);
-
-#endif // __LCD_H__
+#endif // __ADC_H__
