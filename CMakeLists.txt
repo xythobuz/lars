@@ -53,6 +53,7 @@ target_compile_options(drumkit PUBLIC
     -Wextra
     -Werror
     -Wshadow
+    -O3
 )
 
 # suppress some warnings for borked 3rd party files in Pico SDK

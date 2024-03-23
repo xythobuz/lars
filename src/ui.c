@@ -33,6 +33,10 @@ static enum ui_modes ui_mode = 0;
 static enum machine_modes machine_mode = 0;
 static uint32_t last_redraw = 0;
 
+enum machine_modes ui_get_machinemode(void) {
+    return machine_mode;
+}
+
 static void ui_redraw(void) {
     char mode[64] = {0};
     char val[64] = {0};
@@ -46,7 +50,11 @@ static void ui_redraw(void) {
         }
 
         case UI_MODE: {
-            snprintf(mode, sizeof(mode) - 1, "Mode:");
+            if ((machine_mode == MODE_LOOPSTATION) && (sequence_get_ms() != 0)) {
+                snprintf(mode, sizeof(mode) - 1, "Mode: %"PRIu32"ms", sequence_get_ms());
+            }else {
+                snprintf(mode, sizeof(mode) - 1, "Mode:");
+            }
             switch (machine_mode) {
                 case MODE_LOOPSTATION: {
                     snprintf(val, sizeof(val) - 1, "Loop");
@@ -59,7 +67,7 @@ static void ui_redraw(void) {
                 }
 
                 default: {
-                    printf("%s: invalid mode: %d\n", __func__, machine_mode);
+                    printf("%s: invalid machine mode: %d\n", __func__, machine_mode);
                     machine_mode = 0;
                     ui_redraw();
                     return;
@@ -105,6 +113,7 @@ static void ui_buttons_loopstation(enum buttons btn, bool val) {
 
         case BTN_REC: {
             rec_held_down = val;
+            sequence_looptime(!val);
             break;
         }
 
@@ -139,6 +148,13 @@ static void ui_buttons(enum buttons btn, bool val) {
         case BTN_CLICK: {
             if (val) {
                 ui_mode = (ui_mode + 1) % UI_NUM_MODES;
+
+                // allow other ui mdoes only in drumkit mode
+                if (machine_mode == MODE_LOOPSTATION)
+                {
+                    ui_mode = 0;
+                }
+
                 ui_redraw();
             }
             break;
@@ -180,7 +196,19 @@ void ui_encoder(int32_t val) {
         }
 
         case UI_MODE: {
-            machine_mode = (machine_mode + val) % MACHINE_NUM_MODES;
+            int32_t tmp = machine_mode + val;
+            while (tmp < 0) {
+                tmp += MACHINE_NUM_MODES;
+            }
+            while (tmp >= MACHINE_NUM_MODES) {
+                tmp -= MACHINE_NUM_MODES;
+            }
+            machine_mode = tmp;
+
+            printf("mode add %"PRIi32" now %d\n", val, machine_mode);
+
+            // reset sequence
+            sequence_init();
             break;
         }
 

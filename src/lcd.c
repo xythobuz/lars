@@ -40,7 +40,10 @@ void lcd_init(void) {
 
     disp.external_vcc = false;
     ssd1306_init(&disp, LCD_WIDTH, LCD_HEIGHT, LCD_ADDR, LCD_I2C);
+
     ssd1306_clear(&disp);
+    ssd1306_draw_string(&disp, 0, 5, 5, "LARS");
+    ssd1306_show(&disp);
 }
 
 void lcd_draw(const char *mode, const char *val, const char *bat) {

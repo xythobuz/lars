@@ -49,6 +49,10 @@ int main(void) {
     encoder_init();
     lcd_init();
     led_init();
+
+    // show splash for a bit
+    sleep_ms(500);
+
     sequence_init();
     ui_init();
     printf("init done\n");

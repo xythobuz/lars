@@ -36,13 +36,15 @@ enum channels {
 
 #define CH_GPIO_TIMINGS { 42, 42, 42 } // in milliseconds
 
-#define MAX_BEATS 32
+#define MAX_BEATS 128
 #define MAX_BANKS (MAX_BEATS / NUM_BTNS)
 
 void sequence_init(void);
 
 void sequence_set_bpm(uint32_t new_bpm);
 uint32_t sequence_get_bpm(void);
+
+uint32_t sequence_get_ms(void);
 
 void sequence_set_beats(uint32_t new_beats);
 uint32_t sequence_get_beats(void);
@@ -52,6 +54,8 @@ uint32_t sequence_get_bank(void);
 
 void sequence_handle_button_loopstation(enum buttons btn, bool rec);
 void sequence_handle_button_drummachine(enum buttons btn);
+
+void sequence_looptime(bool fin);
 
 void sequence_run(void);
 

@@ -1,5 +1,9 @@
 # Drumkit
 
+This is a simple drum machine / loopstation.
+It's made for three hand-wound solenoids mounted to a tambourine.
+It is controlled by a Raspberry Pi Pico.
+
 ## Quick Start
 
 Initialize your local repo and prepare the build:

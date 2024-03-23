@@ -22,8 +22,8 @@
 #include <stdint.h>
 
 enum ui_modes {
-    UI_BPM = 0,
-    UI_MODE,
+    UI_MODE = 0,
+    UI_BPM,
     UI_BANK,
     UI_LENGTH,
 
@@ -40,5 +40,7 @@ enum machine_modes {
 void ui_init(void);
 void ui_encoder(int32_t val);
 void ui_run(void);
+
+enum machine_modes ui_get_machinemode(void);
 
 #endif // __UI_H__

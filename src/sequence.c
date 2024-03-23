@@ -17,23 +17,28 @@
  */
 
 #include <stdio.h>
+#include <inttypes.h>
 #include "pico/stdlib.h"
 
 #include "led.h"
 #include "pulse.h"
+#include "ui.h"
 #include "sequence.h"
 
 static const uint32_t channel_times[NUM_CHANNELS] = CH_GPIO_TIMINGS;
 
-static uint32_t ms_per_beat = 500;
-static uint32_t beats = 16;
+static uint32_t ms_per_beat = 0;
+static uint32_t beats = MAX_BEATS;
 static uint32_t last_t = 0;
 static uint32_t last_i = 0;
 static uint32_t bank = 0;
+static uint32_t beattimer_start = 0;
 
 static enum channels sequence[MAX_BEATS] = {0};
 
 void sequence_init(void) {
+    ms_per_beat = 0;
+    beats = MAX_BEATS;
     last_t = to_ms_since_boot(get_absolute_time());
     last_i = 0;
 
@@ -43,11 +48,16 @@ void sequence_init(void) {
 }
 
 void sequence_set_bpm(uint32_t new_bpm) {
-    ms_per_beat = 60000 / new_bpm;
+    ms_per_beat = 60000 / new_bpm / beats;
+    printf("bpm now %"PRIu32" = %"PRIu32"ms\n", new_bpm, ms_per_beat);
 }
 
 uint32_t sequence_get_bpm(void) {
-    return 60000 / ms_per_beat;
+    return 60000 / (ms_per_beat * beats);
+}
+
+uint32_t sequence_get_ms(void) {
+    return ms_per_beat;
 }
 
 void sequence_set_beats(uint32_t new_beats) {
@@ -115,21 +125,19 @@ void sequence_handle_button_loopstation(enum buttons btn, bool rec) {
     }
 
     if (rec) {
-        uint32_t beat = 42; // TODO!!
-
         switch (btn) {
             case BTN_A: {
-                sequence_set(beat, CH_KICK, true);
+                sequence_set(last_i, CH_KICK, true);
                 break;
             }
 
             case BTN_B: {
-                sequence_set(beat, CH_SNARE, true);
+                sequence_set(last_i, CH_SNARE, true);
                 break;
             }
 
             case BTN_C: {
-                sequence_set(beat, CH_HIHAT, true);
+                sequence_set(last_i, CH_HIHAT, true);
                 break;
             }
 
@@ -171,25 +179,43 @@ void sequence_handle_button_drummachine(enum buttons btn) {
     }
 }
 
+void sequence_looptime(bool fin) {
+    if (!fin) {
+        beattimer_start = to_ms_since_boot(get_absolute_time());
+    } else {
+        if (ms_per_beat == 0) {
+            uint32_t now = to_ms_since_boot(get_absolute_time());
+            uint32_t diff = now - beattimer_start;
+            ms_per_beat = diff / beats;
+            printf("looptime: diff=%"PRIu32"ms per_beat=%"PRIu32"ms\n", diff, ms_per_beat);
+        }
+    }
+}
+
 void sequence_run(void) {
-    /*
     uint32_t now = to_ms_since_boot(get_absolute_time());
 
-    if ((last_t + ms_per_beat) >= now) {
+    if ((ms_per_beat > 0) && (now >= (last_t + ms_per_beat))) {
+        //printf("trigger\n");
+
         uint32_t i = last_i + 1;
         if (i >= beats) i = 0;
 
-        led_set(last_i, false);
-        led_set(i, true);
+        if (ui_get_machinemode() == MODE_DRUMMACHINE) {
+            led_set(last_i, false);
+            led_set(i, true);
+        }
 
         for (uint ch = 0; ch < NUM_CHANNELS; ch++) {
             if (sequence[i] & (1 << ch)) {
-                pulse_trigger_out(i, channel_times[ch]);
+                pulse_trigger_out(ch, channel_times[ch]);
+                if (ui_get_machinemode() == MODE_LOOPSTATION) {
+                    pulse_trigger_led(ch, channel_times[ch]);
+                }
             }
         }
 
         last_t = now;
         last_i = i;
     }
-    */
 }
