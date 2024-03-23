@@ -23,13 +23,13 @@
 #include "pulse.h"
 #include "sequence.h"
 
-#define MAX_BEATS 32
 static const uint32_t channel_times[NUM_CHANNELS] = CH_GPIO_TIMINGS;
 
 static uint32_t ms_per_beat = 500;
 static uint32_t beats = 16;
 static uint32_t last_t = 0;
 static uint32_t last_i = 0;
+static uint32_t bank = 0;
 
 static enum channels sequence[MAX_BEATS] = {0};
 
@@ -46,8 +46,30 @@ void sequence_set_bpm(uint32_t new_bpm) {
     ms_per_beat = 60000 / new_bpm;
 }
 
+uint32_t sequence_get_bpm(void) {
+    return 60000 / ms_per_beat;
+}
+
 void sequence_set_beats(uint32_t new_beats) {
     beats = (new_beats <= MAX_BEATS) ? new_beats : MAX_BEATS;
+
+    uint32_t max_banks_currently = (beats + (NUM_BTNS - 1)) / NUM_BTNS;
+    bank = (bank < max_banks_currently) ? bank : max_banks_currently;
+}
+
+uint32_t sequence_get_beats(void) {
+    return beats;
+}
+
+void sequence_set_bank(uint32_t new_bank) {
+    uint32_t b = (new_bank < MAX_BANKS) ? new_bank : MAX_BANKS;
+
+    uint32_t max_banks_currently = (beats + (NUM_BTNS - 1)) / NUM_BTNS;
+    bank = (b < max_banks_currently) ? b : max_banks_currently;
+}
+
+uint32_t sequence_get_bank(void) {
+    return bank;
 }
 
 static void sequence_set(uint32_t beat, enum channels ch, bool value) {
@@ -123,18 +145,21 @@ void sequence_handle_button_drummachine(enum buttons btn) {
 
     switch (btn) {
         case BTN_A: {
+            // TODO kick is wrong here
             bool val = !sequence_get(beat, CH_KICK);
             sequence_set(beat, CH_KICK, val);
             break;
         }
 
         case BTN_B: {
+            // TODO snare is wrong here
             bool val = !sequence_get(beat, CH_SNARE);
             sequence_set(beat, CH_SNARE, val);
             break;
         }
 
         case BTN_C: {
+            // TODO hihat is wrong here
             bool val = !sequence_get(beat, CH_HIHAT);
             sequence_set(beat, CH_HIHAT, val);
             break;

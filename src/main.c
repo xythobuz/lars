@@ -20,6 +20,7 @@
 #include "pico/stdlib.h"
 #include "hardware/watchdog.h"
 
+#include "adc.h"
 #include "buttons.h"
 #include "encoder.h"
 #include "lcd.h"
@@ -34,6 +35,7 @@
 int main(void) {
     watchdog_enable(WATCHDOG_PERIOD_MS, 1);
     stdio_init_all();
+    bat_init();
     buttons_init();
     encoder_init();
     lcd_init();
@@ -50,6 +52,7 @@ int main(void) {
         encoder_run();
         sequence_run();
         pulse_run();
+        ui_run();
 
         int32_t epos = encoder_pos();
         if (epos != last_epos) {

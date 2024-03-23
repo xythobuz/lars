@@ -26,4 +26,3 @@ int32_t encoder_pos(void);
 void encoder_run(void);
 
 #endif // __ENCODER_H__
-

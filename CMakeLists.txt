@@ -30,6 +30,7 @@ pico_sdk_init()
 add_executable(drumkit)
 
 target_sources(drumkit PUBLIC
+    src/adc.c
     src/buttons.c
     src/encoder.c
     src/lcd.c
