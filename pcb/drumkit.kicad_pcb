@@ -5,6 +5,12 @@
   )
 
   (paper "A4")
+  (title_block
+    (title "Drumkit")
+    (date "2024-03-25")
+    (rev "1")
+  )
+
   (layers
     (0 "F.Cu" signal)
     (31 "B.Cu" signal)
@@ -1857,12 +1863,12 @@
     (stroke (width 0.2) (type default)) (fill none) (layer "B.Cu") (tstamp 5ba1d609-5eb5-4b81-9241-5d87d4738412))
   (gr_circle (center 201.93 20.32) (end 203.2 20.32)
     (stroke (width 0.2) (type default)) (fill none) (layer "B.Cu") (tstamp 6c32a74d-8481-4a80-a8d3-f5ade0af6e43))
-  (gr_rect (start 85.09 18.415) (end 203.835 109.22)
-    (stroke (width 0.2) (type default)) (fill none) (layer "B.Cu") (tstamp 79fec591-dd4d-4392-b885-91c11a70f04c))
   (gr_circle (center 201.93 107.315) (end 203.2 106.68)
     (stroke (width 0.2) (type default)) (fill none) (layer "B.Cu") (tstamp 9e16f910-e70f-4590-b3c9-71ed3f00d578))
   (gr_circle (center 86.995 20.32) (end 88.265 20.32)
     (stroke (width 0.2) (type default)) (fill none) (layer "B.Cu") (tstamp dcb896e3-c91a-467f-82c0-e31761a2f45c))
+  (gr_rect (start 85.09 18.415) (end 203.835 109.22)
+    (stroke (width 0.2) (type default)) (fill none) (layer "Edge.Cuts") (tstamp 79fec591-dd4d-4392-b885-91c11a70f04c))
 
   (segment (start 139.065 90.805) (end 142.875 94.615) (width 1) (layer "B.Cu") (net 1) (tstamp d3fec01e-51b7-48bd-a358-0153682a36a7))
   (segment (start 133.35 90.805) (end 139.065 90.805) (width 1) (layer "B.Cu") (net 1) (tstamp dcd90705-bd9c-42f6-87f5-6ba8618a2960))

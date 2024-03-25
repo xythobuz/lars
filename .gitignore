@@ -2,3 +2,6 @@ build
 .directory
 .DS_Store
 pcb/drumkit-backups
+pcb/plot
+pcb/fabrication
+pcb/fab.zip

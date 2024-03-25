@@ -4,6 +4,12 @@
 
   (paper "A4")
 
+  (title_block
+    (title "Drumkit")
+    (date "2024-03-25")
+    (rev "1")
+  )
+
   (lib_symbols
     (symbol "Connector:Conn_01x04_Female" (pin_names (offset 1.016) hide) (in_bom yes) (on_board yes)
       (property "Reference" "J" (at 0 5.08 0)
@@ -1114,10 +1120,6 @@
     (stroke (width 0) (type default))
     (uuid 0fb4ec2d-8cc6-4c40-91f3-ca7d4ee1ecd2)
   )
-  (wire (pts (xy 54.61 38.1) (xy 54.61 78.74))
-    (stroke (width 0) (type default))
-    (uuid 0fd88b82-73bc-47a1-b27d-ceed806130f2)
-  )
   (wire (pts (xy 30.48 127) (xy 27.94 127))
     (stroke (width 0) (type default))
     (uuid 119848d1-52f8-4e7c-9e64-5a7eff48e65f)
@@ -1173,10 +1175,6 @@
   (wire (pts (xy 153.67 43.18) (xy 187.96 43.18))
     (stroke (width 0) (type default))
     (uuid 2a2b7943-ba73-4eec-9045-d64e67436a5a)
-  )
-  (wire (pts (xy 57.15 76.2) (xy 57.15 40.64))
-    (stroke (width 0) (type default))
-    (uuid 34b57771-738c-4259-acb3-ebe1b780162e)
   )
   (wire (pts (xy 81.28 68.58) (xy 90.17 68.58))
     (stroke (width 0) (type default))
@@ -1509,10 +1507,6 @@
   (wire (pts (xy 143.51 68.58) (xy 143.51 71.12))
     (stroke (width 0) (type default))
     (uuid dee665e0-2d2e-42a9-a2b0-d88eac014d81)
-  )
-  (wire (pts (xy 59.69 73.66) (xy 59.69 43.18))
-    (stroke (width 0) (type default))
-    (uuid df8f4860-da5d-45b7-8952-2acfad6abb5e)
   )
   (wire (pts (xy 157.48 127) (xy 162.56 127))
     (stroke (width 0) (type default))
