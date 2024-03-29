@@ -1,8 +1,10 @@
-# Drumkit
+# LARS - Looping Automated Rhythm Station
 
 This is a simple drum machine / loopstation.
 It's made for three hand-wound solenoids mounted to a tambourine.
-It is controlled by a Raspberry Pi Pico.
+It is controlled by a Raspberry Pi Pico on a custom PCB.
+
+See [this blog post for some more context](https://www.xythobuz.de/lars.html).
 
 ## Quick Start
 
@@ -52,12 +54,12 @@ Flash as usual using the mass storage bootloader (hold BOOTSEL while pluggin in 
 
 ## License
 
-This firmware is licensed as GPLv3.
+The firmware of this project is licensed as GPLv3.
+A copy of the license can be found in `COPYING`.
+
 It uses the [Pi Pico SDK](https://github.com/raspberrypi/pico-sdk), licensed as BSD 3-clause, and therefore also [TinyUSB](https://github.com/hathach/tinyusb), licensed under the MIT license.
 
 The code in `src/encoder.c` is derived from [mathertel/RotaryEncoder](https://github.com/mathertel/RotaryEncoder) and therefore licensed as BSD 3-clause.
-
-~~The PCB design uses `Mini360_step_down_converter` library from [rayvburn/KiCad](https://github.com/rayvburn/KiCad/tree/master/Mini360_step_down_converter).~~
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -70,3 +72,27 @@ The code in `src/encoder.c` is derived from [mathertel/RotaryEncoder](https://gi
     GNU General Public License for more details.
 
     See <http://www.gnu.org/licenses/>.
+
+The schematic and PCB design of this project is licensed under the [CERN Open Hardware Licence Version 2 - Strongly Reciprocal (CERN-OHL-S-2.0+)](https://ohwr.org/cern_ohl_s_v2.txt) or any later version.
+A copy of the license can be found in `LICENSE`.
+
+     ------------------------------------------------------------------------------
+    | This source describes Open Hardware and is licensed under the CERN-OHL-S v2  |
+    | or any later version.                                                        |
+    |                                                                              |
+    | You may redistribute and modify this source and make products using it under |
+    | the terms of the CERN-OHL-S v2 (https://ohwr.org/cern_ohl_s_v2.txt)          |
+    | or any later version.                                                        |
+    |                                                                              |
+    | This source is distributed WITHOUT ANY EXPRESS OR IMPLIED WARRANTY,          |
+    | INCLUDING OF MERCHANTABILITY, SATISFACTORY QUALITY AND FITNESS FOR A         |
+    | PARTICULAR PURPOSE. Please see the CERN-OHL-S v2 (or any later version)      |
+    | for applicable conditions.                                                   |
+    |                                                                              |
+    | Source location: https://git.xythobuz.de/thomas/drumkit                      |
+    |                                                                              |
+    | As per CERN-OHL-S v2 section 4, should You produce hardware based on this    |
+    | source, You must where practicable maintain the Source Location visible      |
+    | on the external case of the Gizmo or other products you make using this      |
+    | source.                                                                      |
+     ------------------------------------------------------------------------------

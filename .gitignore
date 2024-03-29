@@ -1,6 +1,8 @@
-build
 .directory
 .DS_Store
+
+build
+
 pcb/drumkit-backups
 pcb/plot
 pcb/fabrication
