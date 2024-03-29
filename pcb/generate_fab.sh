@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# SPDX-FileCopyrightText: 2023 - 2024 Thomas Buck <thomas@xythobuz.de>
+# SPDX-FileCopyrightText: 2024 Thomas Buck <thomas@xythobuz.de>
 # SPDX-License-Identifier: CERN-OHL-S-2.0+
 #
 #  ------------------------------------------------------------------------------
-# | Copyright (c) 2023 - 2024 Thomas Buck <thomas@xythobuz.de>                   |
+# | Copyright (c) 2024 Thomas Buck <thomas@xythobuz.de>                          |
 # |                                                                              |
 # | This source describes Open Hardware and is licensed under the CERN-OHL-S v2  |
 # | or any later version.                                                        |

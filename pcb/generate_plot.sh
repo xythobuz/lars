@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# SPDX-FileCopyrightText: 2023 - 2024 Thomas Buck <thomas@xythobuz.de>
+# SPDX-FileCopyrightText: 2024 Thomas Buck <thomas@xythobuz.de>
 # SPDX-License-Identifier: CERN-OHL-S-2.0+
 #
 #  ------------------------------------------------------------------------------
-# | Copyright (c) 2023 - 2024 Thomas Buck <thomas@xythobuz.de>                   |
+# | Copyright (c) 2024 Thomas Buck <thomas@xythobuz.de>                          |
 # |                                                                              |
 # | This source describes Open Hardware and is licensed under the CERN-OHL-S v2  |
 # | or any later version.                                                        |
@@ -31,6 +31,7 @@ INPCB="drumkit.kicad_pcb"
 OUTDIR="plot"
 LAYER_F="F.Cu,F.Mask,F.Paste,F.Silkscreen,Edge.Cuts,User.Drawings"
 LAYER_B="B.Cu,B.Mask,B.Paste,B.Silkscreen,Edge.Cuts,User.Drawings"
+LAYER_MANUAL="B.Cu,Edge.Cuts"
 
 cd "$(dirname "$0")"
 rm -rf $OUTDIR
@@ -73,6 +74,17 @@ do
             -t "KiCad Classic"  \
             -l $LAYER_F,$LAYER_B \
             -o $OUTDIR/$IN.$TYPE \
+            $IN
+        echo
+
+        echo "Exporting DIY board $VAR"
+        rm -rf $OUTDIR/${IN}_diy.$TYPE
+        kicad-cli pcb export $TYPE \
+            -t "KiCad Default"  \
+            -l $LAYER_MANUAL \
+            --black-and-white \
+            --negative \
+            -o $OUTDIR/${IN}_diy.$TYPE \
             $IN
         echo
     done
