@@ -32,9 +32,9 @@ INPCB="drumkit.kicad_pcb"
 cd "$(dirname "$0")"
 
 #echo "Generating plots"
-#rm -rf src/plot
+rm -rf src/plot
 #../pcb/generate_plot.sh
-#cp -r ../pcb/plot src
+cp -r ../pcb/plot src
 #echo
 
 for IN in $INSCH
