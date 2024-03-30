@@ -7,3 +7,7 @@ pcb/drumkit-backups
 pcb/plot
 pcb/fabrication
 pcb/fab.zip
+
+docs/book
+docs/src/plot
+docs/src/inc_*.md
