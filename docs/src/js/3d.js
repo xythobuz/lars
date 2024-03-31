@@ -2,6 +2,24 @@
  * 3d.js
  *
  * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
+ *
+ * For the fitCameraToObject() function also:
+ * Copyright (c) 2024 Michal Jirků
+ * https://wejn.org/2020/12/cracking-the-threejs-object-fitting-nut/
+ *
+ * For everything else:
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * See <http://www.gnu.org/licenses/>.
  */
 
 import * as THREE from 'three';
@@ -9,7 +27,6 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js'
 import { VRMLLoader } from 'three/addons/loaders/VRMLLoader.js';
 
-// https://wejn.org/2020/12/cracking-the-threejs-object-fitting-nut/
 function fitCameraToObject(camera, object, offset, orbitControls, yOffset) {
     const boundingBox = new THREE.Box3();
     boundingBox.setFromObject( object );
@@ -92,7 +109,7 @@ export function init_3d(path, container, status, div_width, div_height) {
 
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
 
-    const renderer = new THREE.WebGLRenderer();
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
 
     const controls = new OrbitControls(camera, renderer.domElement);

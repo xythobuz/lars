@@ -10,4 +10,4 @@ It is controlled by a Raspberry Pi Pico on a custom PCB.
 
 See [this blog post for some more context](https://www.xythobuz.de/lars.html).
 
-**TODO** work in progress
+[![assembled prototype](https://www.xythobuz.de/img/lars_3_small.jpg)](https://www.xythobuz.de/img/lars_3.jpg)

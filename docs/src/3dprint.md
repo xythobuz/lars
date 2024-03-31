@@ -1,6 +1,8 @@
 # Mounting Hardware
 
-**TODO** work in progress
+This page shows all the 3d printed parts.
+The dimensions for the parametric OpenSCAD settings for these generated STL files should match what we used for the prototype.
+For your own build you may need to get the OpenSCAD sources [from the repo](https://github.com/xythobuz/lars/tree/master/3dprint) and tweak the values.
 
 ## Beam
 
