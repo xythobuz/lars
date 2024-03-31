@@ -10,9 +10,12 @@ import { STLLoader } from 'three/addons/loaders/STLLoader.js'
 import { VRMLLoader } from 'three/addons/loaders/VRMLLoader.js';
 
 // https://wejn.org/2020/12/cracking-the-threejs-object-fitting-nut/
-function fitCameraToCenteredObject(camera, object, offset, orbitControls, yOffset) {
+function fitCameraToObject(camera, object, offset, orbitControls, yOffset) {
     const boundingBox = new THREE.Box3();
     boundingBox.setFromObject( object );
+
+    var middle = new THREE.Vector3();
+    boundingBox.getCenter(middle);
 
     var size = new THREE.Vector3();
     boundingBox.getSize(size);
@@ -61,7 +64,8 @@ function fitCameraToCenteredObject(camera, object, offset, orbitControls, yOffse
     // offset the camera, if desired (to avoid filling the whole canvas)
     if( offset !== undefined && offset !== 0 ) cameraZ *= offset;
 
-    camera.position.set( 0, yOffset * cameraZ, cameraZ );
+    camera.target = middle;
+    camera.position.set( middle.x, middle.y + yOffset * cameraZ, middle.z + cameraZ );
 
     // set the far plane of the camera so that it easily encompasses the whole object
     const minZ = boundingBox.min.z;
@@ -72,7 +76,7 @@ function fitCameraToCenteredObject(camera, object, offset, orbitControls, yOffse
 
     if ( orbitControls !== undefined ) {
         // set camera to rotate around the center
-        orbitControls.target = new THREE.Vector3(0, 0, 0);
+        orbitControls.target = middle;
 
         // prevent camera from zooming out far enough to create far plane cutoff
         orbitControls.maxDistance = cameraToFarEdge * 2;
@@ -84,7 +88,7 @@ export function init_3d(path, container, status, div_width, div_height) {
     const height = div_height;
 
     const scene = new THREE.Scene();
-    scene.add(new THREE.AxesHelper(1));
+    //scene.add(new THREE.AxesHelper(1));
 
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
 
@@ -117,8 +121,10 @@ export function init_3d(path, container, status, div_width, div_height) {
             path,
             function (geometry) {
                 const mesh = new THREE.Mesh(geometry, material);
+                mesh.rotation.setFromVector3(new THREE.Vector3(-Math.PI / 2, 0, 0));
                 scene.add(mesh);
-                fitCameraToCenteredObject(camera, scene, 0, controls, 0);
+                fitCameraToObject(camera, scene, 0, controls, 0);
+                controls.update();
             },
             (xhr) => {
                 const s = (xhr.loaded / xhr.total) * 100 + '% loaded';
@@ -139,7 +145,8 @@ export function init_3d(path, container, status, div_width, div_height) {
             path,
             function (object) {
                 scene.add(object);
-                fitCameraToCenteredObject(camera, scene, 0, controls, 0);
+                fitCameraToObject(camera, scene, 0, controls, 0);
+                controls.update();
             },
             (xhr) => {
                 const s = (xhr.loaded / xhr.total) * 100 + '% loaded';
@@ -195,7 +202,8 @@ export function init_3d(path, container, status, div_width, div_height) {
     btn_rst.type = "button";
     btn_rst.value = "Reset Camera";
     btn_rst.addEventListener('click', function() {
-        fitCameraToCenteredObject(camera, scene, 0, controls, 0);
+        fitCameraToObject(camera, scene, 0, controls, 0);
+        controls.update();
     });
 
     const div_rst = document.createElement("div");

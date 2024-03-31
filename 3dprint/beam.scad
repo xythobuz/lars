@@ -1,3 +1,4 @@
+part="all";//[all]
 $fa=1/1;
 $fs=1/2;
 bissl=1/100;

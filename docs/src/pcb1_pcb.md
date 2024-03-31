@@ -20,6 +20,10 @@ You can also view the [2D PCB layout as PDF](./plot/drumkit.kicad_pcb.pdf).
 
 ## DIY Version
 
+The DIY version is suitable for etching at home, it only needs the bottom copper layer.
+Be aware that there is one track on the top layer, for a safety diode that was added later.
+This connection should be done with a wire by hand.
+
 You can also view the [DIY layout as PDF](./plot/drumkit.kicad_pcb_diy.pdf).
 
 <script src="js/svg-pan-zoom.js" charset="UTF-8"></script>
