@@ -43,6 +43,8 @@ rm -rf src/stl
 cp -r ../3dprint/stl src
 #echo
 
+INSTL=`ls ../3dprint/stl/*.stl`
+
 for IN in $INSCH
 do
     o="src/inc_$IN.md"
@@ -70,6 +72,50 @@ do
         echo >> $o
     done
 
+    echo
+done
+
+plot_3d() {
+    echo '<script type="importmap">' >> $1
+    echo '    {' >> $1
+    echo '        "imports": {' >> $1
+    echo '            "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",' >> $1
+    echo '            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"' >> $1
+    echo '        }' >> $1
+    echo '    }' >> $1
+    echo '</script>' >> $1
+    echo "<p>Status: \"<span id=\"3d_info_$2\">Preparing 3D model...</span>\"</p>" >> $1
+    echo "<div id=\"3d_viewer_$2\" style=\"width: 100%; height: 100%; background-color: white; border: 1px solid black;\"></div>" >> $1
+    echo '<script type="module">' >> $1
+    echo "    var info = document.getElementById(\"3d_info_$2\");" >> $1
+    echo "    var view = document.getElementById(\"3d_viewer_$2\");" >> $1
+    echo '    view.style.height = Math.floor(view.clientWidth * 0.707) + "px";' >> $1
+    echo '    import { init_3d } from "./js/3d.js";' >> $1
+    echo "    init_3d(\"$3\", view, info, view.clientWidth, view.clientHeight);" >> $1
+    echo '</script>' >> $1
+}
+
+for IN in $INPCB
+do
+    o="src/inc_$IN.md"
+    file="plot/$IN.wrl"
+    name=`echo $file | sed "s:plot/::g" | sed 's:.wrl::g'`
+    echo "Include for $IN at $o, $file, $name"
+    rm -rf $o
+
+    plot_3d $o $name $file
+    echo
+done
+
+for IN in $INSTL
+do
+    o=`echo $IN | sed "s:../3dprint/stl/:src/inc_:g" | sed "s:.stl:.stl.md:g"`
+    file=`echo $IN | sed "s:../3dprint/::g"`
+    name=`echo $file | sed "s:stl/::g" | sed 's:.stl::g'`
+    echo "Include for $IN at $o, $file, $name"
+    rm -rf $o
+
+    plot_3d $o $name $file
     echo
 done
 

@@ -52,9 +52,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo add-apt-repository --yes ppa:kicad/kicad-7.0-releases
+          sudo add-apt-repository --yes ppa:kicad/kicad-8.0-releases
           sudo apt update
-          sudo apt install -y --install-recommends kicad pipx libfuse2 libegl1 poppler-utils
+          sudo apt install -y --install-recommends kicad pipx libfuse2 libegl1 poppler-utils openscad zip
 
       - name: Install latest mdbook
         run: |
@@ -66,6 +66,9 @@ jobs:
 
       - name: Generate Plots
         run: pcb/generate_plot.sh
+
+      - name: Render STLs
+        run: 3dprint/generate_stls.sh
 
       - name: Build Book
         run: docs/generate_docs.sh build
