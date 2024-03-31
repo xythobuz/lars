@@ -8,7 +8,9 @@ This is a simple drum machine / loopstation.
 It's made for three hand-wound solenoids mounted to a tambourine.
 It is controlled by a Raspberry Pi Pico on a custom PCB.
 
-See [this blog post for some more context](https://www.xythobuz.de/lars.html).
+Please take a look at [the auto-generated documentation](https://xythobuz.github.io/lars/).
+
+Also see [this blog post for some more context](https://www.xythobuz.de/lars.html).
 
 ## Quick Start
 
@@ -29,7 +31,9 @@ Then you can build new binaries like this:
 
     make -Cbuild -j4
 
-Flash as usual using the mass storage bootloader (hold BOOTSEL while pluggin in the Pico).
+For the first time, flash as usual using the mass storage bootloader (hold BOOTSEL while pluggin in the Pico).
+After the firmware has been flashed once you can just use the included `flash.sh` to avoid having to hold the button.
+Use `debug.sh` to open a serial console via USB.
 
 ## Hardware Connections
 

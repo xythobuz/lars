@@ -10,7 +10,7 @@ import { STLLoader } from 'three/addons/loaders/STLLoader.js'
 import { VRMLLoader } from 'three/addons/loaders/VRMLLoader.js';
 
 // https://wejn.org/2020/12/cracking-the-threejs-object-fitting-nut/
-function fitCameraToCenteredObject(camera, object, offset, orbitControls ) {
+function fitCameraToCenteredObject(camera, object, offset, orbitControls, yOffset) {
     const boundingBox = new THREE.Box3();
     boundingBox.setFromObject( object );
 
@@ -61,7 +61,7 @@ function fitCameraToCenteredObject(camera, object, offset, orbitControls ) {
     // offset the camera, if desired (to avoid filling the whole canvas)
     if( offset !== undefined && offset !== 0 ) cameraZ *= offset;
 
-    camera.position.set( 0, 0, cameraZ );
+    camera.position.set( 0, yOffset * cameraZ, cameraZ );
 
     // set the far plane of the camera so that it easily encompasses the whole object
     const minZ = boundingBox.min.z;
@@ -86,15 +86,14 @@ export function init_3d(path, container, status, div_width, div_height) {
     const scene = new THREE.Scene();
     scene.add(new THREE.AxesHelper(1));
 
-    const camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
+    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
 
     const renderer = new THREE.WebGLRenderer();
-    renderer.setSize( width, height );
+    renderer.setSize(width, height);
 
-    container.appendChild( renderer.domElement );
-
-    const controls = new OrbitControls( camera, renderer.domElement );
+    const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
+    controls.autoRotate = true;
 
     if (path.endsWith(".stl")) {
         const light_amb = new THREE.AmbientLight(0x424242);
@@ -119,7 +118,7 @@ export function init_3d(path, container, status, div_width, div_height) {
             function (geometry) {
                 const mesh = new THREE.Mesh(geometry, material);
                 scene.add(mesh);
-                fitCameraToCenteredObject(camera, scene, 0, controls);
+                fitCameraToCenteredObject(camera, scene, 0, controls, 0);
             },
             (xhr) => {
                 const s = (xhr.loaded / xhr.total) * 100 + '% loaded';
@@ -140,7 +139,7 @@ export function init_3d(path, container, status, div_width, div_height) {
             path,
             function (object) {
                 scene.add(object);
-                fitCameraToCenteredObject(camera, scene, 0, controls);
+                fitCameraToCenteredObject(camera, scene, 0, controls, 0);
             },
             (xhr) => {
                 const s = (xhr.loaded / xhr.total) * 100 + '% loaded';
@@ -159,17 +158,47 @@ export function init_3d(path, container, status, div_width, div_height) {
     }
 
     camera.position.z = 50;
-
-    function render() {
-        renderer.render(scene, camera);
-    }
+    controls.update();
 
     function animate() {
         requestAnimationFrame(animate);
         controls.update();
-        render();
+        renderer.render(scene, camera);
     }
 
     animate();
     status.textContent = "3D model ready!";
+
+    container.appendChild(renderer.domElement);
+
+    const div = document.createElement("div");
+    div.style.position = "absolute";
+    div.style.left = "5px";
+    div.style.top = "5px";
+    div.style.background = "white";
+    div.style.color = "black";
+    container.appendChild(div);
+
+    const chk_ar = document.createElement("input");
+    chk_ar.type = "checkbox";
+    chk_ar.checked = true;
+    chk_ar.addEventListener('change', function() {
+        controls.autoRotate = this.checked;
+    });
+
+    const div_ar = document.createElement("div");
+    div_ar.appendChild(chk_ar);
+    div_ar.appendChild(document.createTextNode("Auto-Rotate"));
+    div.appendChild(div_ar);
+
+    const btn_rst = document.createElement("input");
+    btn_rst.type = "button";
+    btn_rst.value = "Reset Camera";
+    btn_rst.addEventListener('click', function() {
+        fitCameraToCenteredObject(camera, scene, 0, controls, 0);
+    });
+
+    const div_rst = document.createElement("div");
+    div_rst.appendChild(btn_rst);
+    div.appendChild(div_rst);
 }

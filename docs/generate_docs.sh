@@ -85,7 +85,7 @@ plot_3d() {
     echo '    }' >> $1
     echo '</script>' >> $1
     echo "<p>Status: \"<span id=\"3d_info_$2\">Preparing 3D model...</span>\"</p>" >> $1
-    echo "<div id=\"3d_viewer_$2\" style=\"width: 100%; height: 100%; background-color: white; border: 1px solid black;\"></div>" >> $1
+    echo "<div id=\"3d_viewer_$2\" style=\"width: 100%; height: 100%; background-color: white; border: 1px solid black; position: relative;\"></div>" >> $1
     echo '<script type="module">' >> $1
     echo "    var info = document.getElementById(\"3d_info_$2\");" >> $1
     echo "    var view = document.getElementById(\"3d_viewer_$2\");" >> $1
