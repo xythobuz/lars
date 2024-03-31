@@ -37,6 +37,12 @@ rm -rf src/plot
 cp -r ../pcb/plot src
 #echo
 
+#echo "Generating stls"
+rm -rf src/stl
+#../3dprint/generate_stls.sh
+cp -r ../3dprint/stl src
+#echo
+
 for IN in $INSCH
 do
     o="src/inc_$IN.md"

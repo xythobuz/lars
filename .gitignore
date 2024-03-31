@@ -10,6 +10,7 @@ pcb/fab.zip
 
 docs/book
 docs/src/plot
+docs/src/stl
 docs/src/inc_*.md
 
 3dprint/stl

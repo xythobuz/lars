@@ -88,4 +88,13 @@ do
             $IN
         echo
     done
+
+    #  -----------
+    # | 3D Layout |
+    #  -----------
+    echo "Exporting board 3D"
+    kicad-cli pcb export vrml \
+        -o $OUTDIR/$IN.wrl \
+        $IN
+    echo
 done
