@@ -35,9 +35,15 @@ if [ "$1" = "build" ] ; then
     echo "Generating plots"
     ../pcb/generate_plot.sh
     echo
+    echo "Generating fab"
+    ../pcb/generate_fab.sh
+    echo
 
     echo "Generating plots 2"
     ../pcb2/generate_plot.sh
+    echo
+    echo "Generating fab 2"
+    ../pcb2/generate_fab.sh
     echo
 
     echo "Generating stls"
@@ -48,6 +54,8 @@ fi
 rm -rf src/plot
 cp -r ../pcb/plot src
 cp -r ../pcb2/plot/* src/plot/
+cp ../pcb/fab.zip src/plot/fab_pcb.zip
+cp ../pcb2/fab.zip src/plot/fab_pcb2.zip
 
 rm -rf src/stl
 cp -r ../3dprint/stl src

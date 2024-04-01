@@ -2,6 +2,8 @@
 
 This page shows the current version of the PCB layout as SVG graphics.
 
+You can [download the Gerber files to order PCBs online](./plot/fab_pcb2.zip).
+
 ## 2D PCB Layout
 
 You can also view the [2D PCB layout as PDF](./plot/lars2.kicad_pcb.pdf).
