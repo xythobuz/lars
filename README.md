@@ -42,6 +42,10 @@ You can find the [documentation here on GitHub pages](https://xythobuz.github.io
 The docs are built using [mdbook](https://github.com/rust-lang/mdBook), licensed as `MPL-2.0`.
 Get the [latest release from GitHub](https://github.com/rust-lang/mdBook/releases) for a pre-built binary if you want to test changes to the docs locally.
 
+    ./pcb/generate_plot.sh
+    ./pcb2/generate_plot.sh
+    ./3dprint/generate_stls.sh
+
     ./docs/generate_docs.sh serve
 
 This will open your browser to a local development instance of the docs.
@@ -105,6 +109,8 @@ Some code in `docs/src/js/3d.js` is derived from [a blog post of Michal Jirků](
 
 The schematic and PCB design of this project is licensed under the [CERN Open Hardware Licence Version 2 - Strongly Reciprocal (CERN-OHL-S-2.0+)](https://ohwr.org/cern_ohl_s_v2.txt) or any later version.
 A copy of the license can be found in `LICENSE`.
+
+The PCB designs use a [KiCad-RP-Pico based](https://github.com/ncarandini/KiCad-RP-Pico) symbol and footprint library, licensed as `CC-BY-SA 4.0`.
 
      ------------------------------------------------------------------------------
     | This source describes Open Hardware and is licensed under the CERN-OHL-S v2  |

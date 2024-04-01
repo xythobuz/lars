@@ -31,22 +31,26 @@ INPCB="../pcb/drumkit.kicad_pcb ../pcb2/lars2.kicad_pcb"
 
 cd "$(dirname "$0")"
 
-#echo "Generating plots"
+if [ "$1" = "build" ] ; then
+    echo "Generating plots"
+    ../pcb/generate_plot.sh
+    echo
+
+    echo "Generating plots 2"
+    ../pcb2/generate_plot.sh
+    echo
+
+    echo "Generating stls"
+    ../3dprint/generate_stls.sh
+    echo
+fi
+
 rm -rf src/plot
-#../pcb/generate_plot.sh
 cp -r ../pcb/plot src
-#echo
-
-#echo "Generating plots 2"
-#../pcb/generate_plot.sh
 cp -r ../pcb2/plot/* src/plot/
-#echo
 
-#echo "Generating stls"
 rm -rf src/stl
-#../3dprint/generate_stls.sh
 cp -r ../3dprint/stl src
-#echo
 
 INSTL=`ls ../3dprint/stl/*.stl`
 

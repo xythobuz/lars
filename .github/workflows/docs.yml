@@ -64,12 +64,6 @@ jobs:
           curl -sSL $url | tar -xz --directory=./mdbook
           echo `pwd`/mdbook >> $GITHUB_PATH
 
-      - name: Generate Plots
-        run: pcb/generate_plot.sh
-
-      - name: Render STLs
-        run: 3dprint/generate_stls.sh
-
       - name: Build Book
         run: docs/generate_docs.sh build
 
