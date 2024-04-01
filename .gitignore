@@ -8,6 +8,11 @@ pcb/plot
 pcb/fabrication
 pcb/fab.zip
 
+pcb2/lars2-backups
+pcb2/plot
+pcb2/fabrication
+pcb2/fab.zip
+
 docs/book
 docs/src/plot
 docs/src/stl

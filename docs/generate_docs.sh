@@ -26,8 +26,8 @@
 # | source.                                                                      |
 #  ------------------------------------------------------------------------------
 
-INSCH="drumkit.kicad_sch"
-INPCB="drumkit.kicad_pcb"
+INSCH="../pcb/drumkit.kicad_sch ../pcb2/lars2.kicad_sch"
+INPCB="../pcb/drumkit.kicad_pcb ../pcb2/lars2.kicad_pcb"
 
 cd "$(dirname "$0")"
 
@@ -35,6 +35,11 @@ cd "$(dirname "$0")"
 rm -rf src/plot
 #../pcb/generate_plot.sh
 cp -r ../pcb/plot src
+#echo
+
+#echo "Generating plots 2"
+#../pcb/generate_plot.sh
+cp -r ../pcb2/plot/* src/plot/
 #echo
 
 #echo "Generating stls"
@@ -45,8 +50,9 @@ cp -r ../3dprint/stl src
 
 INSTL=`ls ../3dprint/stl/*.stl`
 
-for IN in $INSCH
+for path in $INSCH
 do
+    IN=`echo $path | sed "s:../pcb.\\?/::g"`
     o="src/inc_$IN.md"
     echo "Include for $IN at $o"
 
@@ -95,8 +101,9 @@ plot_3d() {
     echo '</script>' >> $1
 }
 
-for IN in $INPCB
+for path in $INPCB
 do
+    IN=`echo $path | sed "s:../pcb.\\?/::g"`
     o="src/inc_$IN.md"
     file="plot/$IN.wrl"
     name=`echo $file | sed "s:plot/::g" | sed 's:.wrl::g'`
@@ -104,8 +111,8 @@ do
     rm -rf $o
 
     plot_3d $o $name $file
-    echo
 done
+echo
 
 for IN in $INSTL
 do
@@ -116,8 +123,8 @@ do
     rm -rf $o
 
     plot_3d $o $name $file
-    echo
 done
+echo
 
 echo "Generating docs"
 if [ "$1" = "serve" ] ; then

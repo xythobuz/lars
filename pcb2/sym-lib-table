@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "chinese_modules")(type "KiCad")(uri "${KIPRJMOD}/../pcb/chinese_modules.kicad_sym")(options "")(descr ""))
+  (lib (name "KiCad-RP-Pico")(type "KiCad")(uri "${KIPRJMOD}/KiCad-RP-Pico/RP-Pico Libraries/MCU_RaspberryPi_and_Boards.kicad_sym")(options "")(descr ""))
+)

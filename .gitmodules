@@ -7,3 +7,6 @@
 [submodule "docs/svg-pan-zoom"]
 	path = docs/svg-pan-zoom
 	url = https://github.com/WebSVG/svg-pan-zoom
+[submodule "pcb2/KiCad-RP-Pico"]
+	path = pcb2/KiCad-RP-Pico
+	url = https://github.com/xythobuz/KiCad-RP-Pico-SMD
