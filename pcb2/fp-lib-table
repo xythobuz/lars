@@ -3,4 +3,5 @@
   (lib (name "chinese_modules")(type "KiCad")(uri "${KIPRJMOD}/../pcb/chinese_modules.pretty")(options "")(descr ""))
   (lib (name "KiCad-RP-Pico")(type "KiCad")(uri "${KIPRJMOD}/KiCad-RP-Pico/RP-Pico Libraries/MCU_RaspberryPi_and_Boards.pretty")(options "")(descr ""))
   (lib (name "ssd1306")(type "KiCad")(uri "${KIPRJMOD}/extern")(options "")(descr ""))
+  (lib (name "5236ab")(type "KiCad")(uri "${KIPRJMOD}/extern/5236AB")(options "")(descr ""))
 )

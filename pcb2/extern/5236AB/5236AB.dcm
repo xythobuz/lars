@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP 5236AB
+D SWITCH TOGGLE SPDT 6A 125V
+K
+F https://datasheet.datasheetarchive.com/originals/dk/DKDS-29/572872.pdf
+$ENDCMP
+#
+#End Doc Library

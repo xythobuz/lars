@@ -119,6 +119,8 @@ Adrián San José Torices](https://grabcad.com/library/pantalla-oled-0-96-128x64
 
 The SSD1306 footprint for pcb2 is from [KiCAD Rookie](https://kicadrookie.blogspot.com/2022/06/ssd1306-i2c-096in-oled-display-kicad_86.html).
 
+The `pcb2/extern/5236AB/5236ab-41x408.stp` 3D model for the power switch comes directly from the manufacturer, [APEM](https://www.apem.com/idec-apem/de/Schalter-f%C3%BCr-Frontplatten/5000M/p/5236AB).
+
      ------------------------------------------------------------------------------
     | This source describes Open Hardware and is licensed under the CERN-OHL-S v2  |
     | or any later version.                                                        |
