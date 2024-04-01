@@ -112,6 +112,8 @@ A copy of the license can be found in `LICENSE`.
 
 The PCB designs use a [KiCad-RP-Pico based](https://github.com/ncarandini/KiCad-RP-Pico) symbol and footprint library, licensed as `CC-BY-SA 4.0`.
 
+The `pcb2/extern/EC12E-200.STEP` 3D model for the rotary encoder comes directly from the manufacturer, [ALPS](https://tech.alpsalpine.com/e/products/detail/EC12E24204A8/).
+
      ------------------------------------------------------------------------------
     | This source describes Open Hardware and is licensed under the CERN-OHL-S v2  |
     | or any later version.                                                        |
