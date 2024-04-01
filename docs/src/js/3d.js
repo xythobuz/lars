@@ -142,9 +142,10 @@ export function init_3d(path, container, status, div_width, div_height) {
                 scene.add(mesh);
                 fitCameraToObject(camera, scene, 0, controls, 0);
                 controls.update();
+                status.textContent = "Loaded STL 100%";
             },
             (xhr) => {
-                const s = (xhr.loaded / xhr.total) * 100 + '% loaded';
+                const s = Math.floor((xhr.loaded / xhr.total) * 100) + '% loaded';
                 console.log(s);
                 status.textContent = s;
             },
@@ -164,9 +165,10 @@ export function init_3d(path, container, status, div_width, div_height) {
                 scene.add(object);
                 fitCameraToObject(camera, scene, 0, controls, 0);
                 controls.update();
+                status.textContent = "Loaded VRML 100%";
             },
             (xhr) => {
-                const s = (xhr.loaded / xhr.total) * 100 + '% loaded';
+                const s = Math.floor((xhr.loaded / xhr.total) * 100) + '% loaded';
                 console.log(s);
                 status.textContent = s;
             },

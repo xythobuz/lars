@@ -35,7 +35,21 @@ For the first time, flash as usual using the mass storage bootloader (hold BOOTS
 After the firmware has been flashed once you can just use the included `flash.sh` to avoid having to hold the button.
 Use `debug.sh` to open a serial console via USB.
 
+## Documentation
+
+You can find the [documentation here on GitHub pages](https://xythobuz.github.io/lars/).
+
+The docs are built using [mdbook](https://github.com/rust-lang/mdBook), licensed as `MPL-2.0`.
+Get the [latest release from GitHub](https://github.com/rust-lang/mdBook/releases) for a pre-built binary if you want to test changes to the docs locally.
+
+    ./docs/generate_docs.sh serve
+
+This will open your browser to a local development instance of the docs.
+
 ## Hardware Connections
+
+These are the used pins on the first prototype.
+Follow these if you want to build your own version without the included PCB design.
 
     Pin 1    GP0    I2C0 SDA
     Pin 2    GP1    I2C0 SCL
@@ -68,6 +82,14 @@ A copy of the license can be found in `COPYING`.
 It uses the [Pi Pico SDK](https://github.com/raspberrypi/pico-sdk), licensed as BSD 3-clause, and therefore also [TinyUSB](https://github.com/hathach/tinyusb), licensed under the MIT license.
 
 The code in `src/encoder.c` is derived from [mathertel/RotaryEncoder](https://github.com/mathertel/RotaryEncoder) and therefore licensed as BSD 3-clause.
+
+The docs are built using [mdbook](https://github.com/rust-lang/mdBook), licensed as `MPL-2.0`.
+
+The PCB SVG files in the documentation are displayed using [svg-pan-zoom](https://github.com/bumbu/svg-pan-zoom), licensed as `BSD-2-Clause`.
+
+The 3D PCB files in the documentation are displayed using [three.js](hhttps://github.com/mrdoob/three.js), licensed as `MIT`.
+
+Some code in `docs/src/js/3d.js` is derived from [a blog post of Michal Jirků](https://wejn.org/2020/12/cracking-the-threejs-object-fitting-nut/).
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
