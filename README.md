@@ -114,6 +114,11 @@ The PCB designs use a [KiCad-RP-Pico based](https://github.com/ncarandini/KiCad-
 
 The `pcb2/extern/EC12E-200.STEP` 3D model for the rotary encoder comes directly from the manufacturer, [ALPS](https://tech.alpsalpine.com/e/products/detail/EC12E24204A8/).
 
+The `pcb2/extern/OLED_128x64.stp` 3D model for the SSD1306 OLED display is made by [
+Adrián San José Torices](https://grabcad.com/library/pantalla-oled-0-96-128x64-1).
+
+The SSD1306 footprint for pcb2 is from [KiCAD Rookie](https://kicadrookie.blogspot.com/2022/06/ssd1306-i2c-096in-oled-display-kicad_86.html).
+
      ------------------------------------------------------------------------------
     | This source describes Open Hardware and is licensed under the CERN-OHL-S v2  |
     | or any later version.                                                        |

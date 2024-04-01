@@ -3033,12 +3033,228 @@
 				)
 			)
 		)
+		(symbol "ssd1306:SSD1306"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "OLED"
+				(at 0 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SSD1306"
+				(at 0 -7.62 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "extern:SSD1306_0.96_Oled"
+				(at 0 7.62 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "OLED 0.96 128x64 I2C"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "oled"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "extern:SSD1306*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "SSD1306_1_1"
+				(rectangle
+					(start -1.27 -4.953)
+					(end 0 -5.207)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 -2.413)
+					(end 0 -2.667)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 0.127)
+					(end 0 -0.127)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 2.667)
+					(end 0 2.413)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 3.81)
+					(end 3.81 -6.35)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(pin power_in line
+					(at -5.08 0 0)
+					(length 3.81)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -5.08 2.54 0)
+					(length 3.81)
+					(name "VCC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -5.08 -5.08 0)
+					(length 3.81)
+					(name "SCL"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at -5.08 -2.54 0)
+					(length 3.81)
+					(name "SDA"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+	)
+	(junction
+		(at 233.68 86.36)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9d8dc067-769b-45bb-9819-6897d07c4772")
 	)
 	(junction
 		(at 160.02 137.16)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "9ea5b2cd-bee9-4e8a-8a8a-df2f0bf1e204")
+	)
+	(junction
+		(at 233.68 63.5)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "bd44915a-f757-4db7-824a-e5e01e4bcc8a")
+	)
+	(junction
+		(at 233.68 109.22)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "cdaa2bbc-e049-4c3e-b97c-283e07d20151")
 	)
 	(wire
 		(pts
@@ -3059,6 +3275,16 @@
 			(type default)
 		)
 		(uuid "0556f8d1-6171-490e-95cf-2ed345fe5780")
+	)
+	(wire
+		(pts
+			(xy 233.68 63.5) (xy 233.68 64.77)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "08e48299-59d5-4e38-861d-0db581781fab")
 	)
 	(wire
 		(pts
@@ -3119,6 +3345,16 @@
 			(type default)
 		)
 		(uuid "1ab63ef9-8162-4c7b-bb8a-1f5d310e0daa")
+	)
+	(wire
+		(pts
+			(xy 233.68 109.22) (xy 233.68 110.49)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1eeb1aaa-33f6-41b9-ac33-6501934d604c")
 	)
 	(wire
 		(pts
@@ -3419,6 +3655,16 @@
 			(type default)
 		)
 		(uuid "a19f9c05-c882-458d-afaf-04f003696bdd")
+	)
+	(wire
+		(pts
+			(xy 233.68 86.36) (xy 233.68 87.63)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a8161a6a-9a0e-418f-a11f-c9192feb706a")
 	)
 	(wire
 		(pts
@@ -4148,6 +4394,148 @@
 		)
 	)
 	(symbol
+		(lib_id "ssd1306:SSD1306")
+		(at 72.39 55.88 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "3b6233de-59d9-42bf-8628-a53671e380ec")
+		(property "Reference" "OLED1"
+			(at 79.502 53.3978 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "SSD1306"
+			(at 79.502 55.8221 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "ssd1306:SSD1306_0.96_Oled"
+			(at 64.77 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 72.39 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "OLED 0.96 128x64 I2C"
+			(at 72.39 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "47da38d2-7e68-41a4-9d49-24c9ca0304b0")
+		)
+		(pin "4"
+			(uuid "d8635835-5a22-4fee-8e8b-b612e97f8c55")
+		)
+		(pin "1"
+			(uuid "d1b146ad-7ffe-4054-8092-dcf0b3097747")
+		)
+		(pin "2"
+			(uuid "1ca27c76-b9d6-4a28-a5ed-d5c60b2ca7b5")
+		)
+		(instances
+			(project "lars2"
+				(path "/a25473f4-1652-4b35-af21-cda37f55b27b"
+					(reference "OLED1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:-BATT")
+		(at 233.68 87.63 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "45e1c597-5cb1-4d0f-9eb8-9b460dd87717")
+		(property "Reference" "#PWR014"
+			(at 233.68 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "-BATT"
+			(at 233.68 91.7631 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 233.68 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 233.68 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"-BATT\""
+			(at 233.68 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ea0ee02c-1894-47ed-8337-5f7b40088d9d")
+		)
+		(instances
+			(project "lars2"
+				(path "/a25473f4-1652-4b35-af21-cda37f55b27b"
+					(reference "#PWR014")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Switch:SW_Push")
 		(at 73.66 156.21 0)
 		(unit 1)
@@ -4697,6 +5085,72 @@
 			(project "lars2"
 				(path "/a25473f4-1652-4b35-af21-cda37f55b27b"
 					(reference "D9")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:-BATT")
+		(at 233.68 110.49 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "709d68d5-98be-4fb6-881a-da47b0618501")
+		(property "Reference" "#PWR016"
+			(at 233.68 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "-BATT"
+			(at 233.68 114.6231 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 233.68 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 233.68 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"-BATT\""
+			(at 233.68 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "339e1f71-6f01-40d9-8e3f-1b39649d31b7")
+		)
+		(instances
+			(project "lars2"
+				(path "/a25473f4-1652-4b35-af21-cda37f55b27b"
+					(reference "#PWR016")
 					(unit 1)
 				)
 			)
@@ -5261,6 +5715,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:-BATT")
+		(at 233.68 64.77 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ad179462-241d-4a98-93d2-199315b6cce2")
+		(property "Reference" "#PWR015"
+			(at 233.68 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "-BATT"
+			(at 233.68 68.9031 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 233.68 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 233.68 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"-BATT\""
+			(at 233.68 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2f70d596-7ce9-4f7a-aff2-f3eafb40e4c1")
+		)
+		(instances
+			(project "lars2"
+				(path "/a25473f4-1652-4b35-af21-cda37f55b27b"
+					(reference "#PWR015")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:Battery_Cell")
 		(at 38.1 48.26 0)
 		(unit 1)
@@ -5769,7 +6289,7 @@
 				)
 			)
 		)
-		(property "Footprint" "MCU_RaspberryPi_and_Boards:RPi_Pico_SMD_TH"
+		(property "Footprint" "KiCad-RP-Pico:RPi_Pico_SMD_only"
 			(at 111.76 92.71 90)
 			(effects
 				(font
