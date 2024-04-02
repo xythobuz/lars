@@ -116,19 +116,19 @@ export function init_3d(path, container, status, div_width, div_height) {
     controls.enableDamping = true;
     controls.autoRotate = true;
 
+    for (const i of [1, -1]) {
+        for (const j of [0, 1, 2]) {
+            const light = new THREE.DirectionalLight(0xffffff, 0.5);
+            light.position.set(i * (j == 0 ? 1 : 0),
+                                i * (j == 1 ? 1 : 0),
+                                i * (j == 2 ? 1 : 0));
+            scene.add(light);
+        }
+    }
+
     if (path.endsWith(".stl")) {
         const light_amb = new THREE.AmbientLight(0x424242);
         scene.add(light_amb);
-
-        for (const i of [1, -1]) {
-            for (const j of [0, 1, 2]) {
-                const light = new THREE.DirectionalLight(0xffffff, 0.5);
-                light.position.set(i * (j == 0 ? 1 : 0),
-                                   i * (j == 1 ? 1 : 0),
-                                   i * (j == 2 ? 1 : 0));
-                scene.add(light);
-            }
-        }
 
         const material = new THREE.MeshStandardMaterial();
         //material.roughness = 0.75;
