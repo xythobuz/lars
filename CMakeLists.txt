@@ -35,6 +35,7 @@ target_sources(drumkit PUBLIC
     src/encoder.c
     src/lcd.c
     src/led.c
+    src/logo.c
     src/main.c
     src/pulse.c
     src/sequence.c

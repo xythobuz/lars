@@ -23,6 +23,7 @@
 #include "hardware/i2c.h"
 
 #include "ssd1306.h"
+#include "logo.h"
 #include "lcd.h"
 
 #define LCD_I2C i2c0
@@ -42,7 +43,14 @@ void lcd_init(void) {
     ssd1306_init(&disp, LCD_WIDTH, LCD_HEIGHT, LCD_ADDR, LCD_I2C);
 
     ssd1306_clear(&disp);
-    ssd1306_draw_string(&disp, 0, 5, 5, "LARS");
+    for (uint y = 0; y < LOGO_HEIGHT; y++) {
+        for (uint x = 0; x < LOGO_WIDTH; x++) {
+            uint pos = y * LOGO_WIDTH + x;
+            if (logo_data[pos / 8] & (1 << (pos % 8))) {
+                ssd1306_draw_pixel(&disp, x, y);
+            }
+        }
+    }
     ssd1306_show(&disp);
 }
 
