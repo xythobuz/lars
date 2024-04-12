@@ -101,21 +101,27 @@ static bool sequence_get(uint32_t beat, enum channels ch) {
 
 void sequence_handle_button_loopstation(enum buttons btn, bool rec) {
     switch (btn) {
-        case BTN_A: {
+        case BTN_A:
+        case BTN_E: {
             pulse_trigger_out(0, channel_times[0]);
             pulse_trigger_led(0, channel_times[0]);
+            pulse_trigger_led(4, channel_times[0]);
             break;
         }
 
-        case BTN_B: {
+        case BTN_B:
+        case BTN_F: {
             pulse_trigger_out(1, channel_times[1]);
             pulse_trigger_led(1, channel_times[1]);
+            pulse_trigger_led(5, channel_times[1]);
             break;
         }
 
-        case BTN_C: {
+        case BTN_C:
+        case BTN_G: {
             pulse_trigger_out(2, channel_times[2]);
             pulse_trigger_led(2, channel_times[2]);
+            pulse_trigger_led(6, channel_times[2]);
             break;
         }
 
@@ -126,17 +132,20 @@ void sequence_handle_button_loopstation(enum buttons btn, bool rec) {
 
     if (rec) {
         switch (btn) {
-            case BTN_A: {
+            case BTN_A:
+            case BTN_E: {
                 sequence_set(last_i, CH_KICK, true);
                 break;
             }
 
-            case BTN_B: {
+            case BTN_B:
+            case BTN_F: {
                 sequence_set(last_i, CH_SNARE, true);
                 break;
             }
 
-            case BTN_C: {
+            case BTN_C:
+            case BTN_G: {
                 sequence_set(last_i, CH_HIHAT, true);
                 break;
             }

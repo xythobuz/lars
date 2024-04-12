@@ -24,5 +24,8 @@
 
 void lcd_init(void);
 void lcd_draw(const char *mode, const char *val, const char *bat);
+void lcd_draw_bye(void);
+
+void lcd_debug_buttons(void);
 
 #endif // __LCD_H__

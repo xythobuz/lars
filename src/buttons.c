@@ -22,8 +22,6 @@
 #include "main.h"
 #include "buttons.h"
 
-#define DEBOUNCE_DELAY_MS 50
-
 static const uint gpio_num_proto[NUM_BTNS] = {
     8, // BTN_A
     9, // BTN_B
@@ -40,17 +38,30 @@ static const uint gpio_num_proto[NUM_BTNS] = {
     16, // BTN_CLICK
 };
 
+#define NUM_ROWS 3
+#define NUM_COLS 3
+
 static const uint gpio_num_v2[NUM_BTNS] = {
-    1, // BTN_A / COL 0
-    4, // BTN_B / COL 1
-    5, // BTN_C / COL 2
-    0, // BTN_D / ROW 0
-    2, // BTN_E / ROW 1
-    3, // BTN_F / ROW 2
+    // handled as matrix
+    0xFF, // BTN_A
+    0xFF, // BTN_B
+    0xFF, // BTN_C
+    0xFF, // BTN_D
+    0xFF, // BTN_E
+    0xFF, // BTN_F
     0xFF, // BTN_G
     0xFF, // BTN_H
     0xFF, // BTN_REC
+
     20, // BTN_CLICK
+};
+
+static const uint gpio_rows[NUM_ROWS] = {
+    0, 2, 3
+};
+
+static const uint gpio_cols[NUM_COLS] = {
+    1, 4, 5
 };
 
 struct button_state {
@@ -60,6 +71,7 @@ struct button_state {
 
 static struct button_state buttons[NUM_BTNS];
 static void (*callback)(enum buttons, bool) = NULL;
+static int last_col = 0;
 
 void buttons_init(void) {
     for (uint i = 0; i < NUM_BTNS; i++) {
@@ -81,6 +93,24 @@ void buttons_init(void) {
         buttons[i].last_time = 0;
         buttons[i].current_state = false;
         buttons[i].last_state = false;
+    }
+
+    if (hw_type != HW_V2) {
+        return;
+    }
+
+    for (uint i = 0; i < NUM_ROWS; i++) {
+        uint n = gpio_rows[i];
+        gpio_init(n);
+        gpio_set_dir(n, GPIO_IN);
+        gpio_pull_up(n);
+    }
+
+    for (uint i = 0; i < NUM_COLS; i++) {
+        uint n = gpio_cols[i];
+        gpio_init(n);
+        gpio_set_dir(n, GPIO_IN);
+        gpio_disable_pulls(n);
     }
 }
 
@@ -109,7 +139,7 @@ static void button_run_single(bool state, uint i) {
     buttons[i].last_state = state;
 }
 
-static void buttons_run_proto(void) {
+static void button_run_proto(void) {
     for (uint i = 0; i < NUM_BTNS; i++) {
         if (gpio_num_proto[i] >= 0xFF) {
             continue;
@@ -120,12 +150,22 @@ static void buttons_run_proto(void) {
     }
 }
 
+static void button_run_matrix(void) {
+    gpio_set_dir(gpio_cols[last_col], GPIO_IN);
+    last_col = (last_col + 1) % NUM_COLS;
+    gpio_set_dir(gpio_cols[last_col], GPIO_OUT);
+    gpio_put(gpio_cols[last_col], false);
+    sleep_us(2);
+    for (uint i = 0; i < NUM_ROWS; i++) {
+        button_run_single(!gpio_get(gpio_rows[i]), last_col * NUM_ROWS + i);
+    }
+}
+
 void buttons_run(void) {
     if (hw_type == HW_PROTOTYPE) {
-        buttons_run_proto();
+        button_run_proto();
     } else if (hw_type == HW_V2) {
-        // TODO read matrix
-
+        button_run_matrix();
         button_run_single(!gpio_get(gpio_num_v2[BTN_CLICK]), BTN_CLICK);
     }
 }

@@ -20,6 +20,7 @@ These are all the parts required to assemble the prototype.
 | U3, U5, U7 | Step-Up Converter Module | [Amazon.de](https://www.amazon.de/Converter-Spannungswandler-LAOMAO-Netzteil-Kompatibel/dp/B0B932BR7V) |
 | J2 | SSD1306 128x64 0.96" Display | [Amazon.de](https://www.amazon.de/AZDelivery-Display-Arduino-Raspberry-gratis/dp/B01L9GC470) |
 | S1 | ALPS EC12E24244 | [Reichelt.de](https://www.reichelt.de/drehimpulsegeber-24-impulse-24-rastungen-vertikal-stec12e08-p73923.html?&nbc=1) |
+| - | Cap for encoder knob | [Reichelt.de](https://www.reichelt.de/potentiometerknopf-fuer-achse-6-4-5-mm-schwarz-knopf-10-150e-p73960.html) |
 | D1 - D4 | LED 5mm | [Reichelt.de](https://www.reichelt.de/led-5mm-bedrahtet-rot-450-mcd-90--5603r1c-khb-a-p361958.html?&nbc=1) |
 | D5 - D8 | 1N5819 Schottky Diode | [Reichelt.de](https://www.reichelt.de/schottkydiode-40-v-1-a-do-41-1n-5819-p41850.html?&nbc=1) |
 | R1 - R4 | Resistor 1k Ohm | [Reichelt.de](https://www.reichelt.de/widerstand-metallschicht-1-00-kohm-0207-0-6-w-1--metall-1-00k-p11403.html?&nbc=1) |

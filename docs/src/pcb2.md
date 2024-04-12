@@ -22,6 +22,7 @@ These are all the parts required to assemble the V2 PCB.
 | BT1 | Keystone 1042 | [Reichelt.de](https://www.reichelt.de/batteriehalter-fuer-1-18650-keystone-1042-p213369.html?&nbc=1) |
 | S1 | APEM 5236AB | [Reichelt.de](https://www.reichelt.de/kippschalter-1a-250vac-1x-ein-ein-printanschluss-as-500apc-p4396.html?&nbc=1) |
 | SW1 | ALPS EC12E24244 | [Reichelt.de](https://www.reichelt.de/drehimpulsegeber-24-impulse-24-rastungen-vertikal-stec12e08-p73923.html?&nbc=1) |
+| - | Cap for encoder knob | [Reichelt.de](https://www.reichelt.de/potentiometerknopf-fuer-achse-6-4-5-mm-schwarz-knopf-10-150e-p73960.html) |
 | SW2 - SW10 | DIP 6x6mm push button | [Reichelt.de](https://www.reichelt.de/kurzhubtaster-printmontage-1-schliesser-6-x-6-x-5-mm-dip-dts-62k-v-p360043.html?&nbc=1) |
 | D1 - D4 | 1N5819 Schottky Diode | [Reichelt.de](https://www.reichelt.de/schottkydiode-40-v-1-a-do-41-1n-5819-p41850.html?&nbc=1) |
 | D5 - D12 | LED 5mm | [Reichelt.de](https://www.reichelt.de/led-5mm-bedrahtet-rot-450-mcd-90--5603r1c-khb-a-p361958.html?&nbc=1) |

@@ -35,14 +35,32 @@
 #define LOGO_INIT_MS 1500
 
 static const uint gpio_hw_detect = 21;
+
 enum hw_versions hw_type = HW_UNKNOWN;
 
+static bool debug_buttons[NUM_BTNS] = {0};
+
+static void debug_buttons_callback(enum buttons btn, bool v) {
+    debug_buttons[btn] = v;
+}
+
 static void reset_to_bootloader(void) {
+    lcd_draw_bye();
+
 #ifdef PICO_DEFAULT_LED_PIN
     reset_usb_boot(1 << PICO_DEFAULT_LED_PIN, 0);
 #else // ! PICO_DEFAULT_LED_PIN
     reset_usb_boot(0, 0);
 #endif // PICO_DEFAULT_LED_PIN
+}
+
+void handle_serial_input(void) {
+    int c = getchar_timeout_us(0);
+    if (c == 0x18) {
+        reset_to_bootloader();
+    } else if (c != PICO_ERROR_TIMEOUT) {
+        printf("%c", c);
+    }
 }
 
 int main(void) {
@@ -63,10 +81,23 @@ int main(void) {
     lcd_init();
     led_init();
 
-    // show splash for a bit and animate LEDs
-    for (uint i = 0; i < LED_COUNT; i++) {
-        led_set(i, true);
-        sleep_ms(LOGO_INIT_MS / LED_COUNT);
+    // read out button state for debug options
+    buttons_callback(debug_buttons_callback);
+    for (uint i = 0; i < (DEBOUNCE_DELAY_MS + 5); i++) {
+        buttons_run();
+        handle_serial_input();
+        sleep_ms(1);
+    }
+
+    if (debug_buttons[BTN_REC]) {
+        lcd_debug_buttons();
+    } else if (!debug_buttons[BTN_H]) {
+        // show splash for a bit and animate LEDs
+        for (uint i = 0; i < LED_COUNT; i++) {
+            handle_serial_input();
+            led_set(i, true);
+            sleep_ms(LOGO_INIT_MS / LED_COUNT);
+        }
     }
 
     // turn off LEDs at end of init
@@ -96,12 +127,7 @@ int main(void) {
             last_epos = epos;
         }
 
-        int c = getchar_timeout_us(0);
-        if (c == 0x18) {
-            reset_to_bootloader();
-        } else if (c != PICO_ERROR_TIMEOUT) {
-            printf("%c", c);
-        }
+        handle_serial_input();
     }
 
     return 0;

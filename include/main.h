@@ -27,4 +27,6 @@ enum hw_versions {
 
 extern enum hw_versions hw_type;
 
+void handle_serial_input(void);
+
 #endif // __MAIN_H__

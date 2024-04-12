@@ -21,6 +21,8 @@
 
 #include <stdbool.h>
 
+#define DEBOUNCE_DELAY_MS 50
+
 enum buttons {
     BTN_A = 0,
     BTN_B,

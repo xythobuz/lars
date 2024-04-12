@@ -23,6 +23,7 @@
 #include "adc.h"
 #include "buttons.h"
 #include "lcd.h"
+#include "led.h"
 #include "sequence.h"
 #include "ui.h"
 
@@ -104,14 +105,19 @@ static void ui_buttons_loopstation(enum buttons btn, bool val) {
     switch (btn) {
         case BTN_A:
         case BTN_B:
-        case BTN_C: {
+        case BTN_C:
+        case BTN_E:
+        case BTN_F:
+        case BTN_G: {
             if (val) {
                 sequence_handle_button_loopstation(btn, rec_held_down);
             }
             break;
         }
 
-        case BTN_REC: {
+        case BTN_REC:
+        case BTN_D:
+        case BTN_H: {
             rec_held_down = val;
             sequence_looptime(!val);
             break;
@@ -129,6 +135,11 @@ static void ui_buttons_drummachine(enum buttons btn, bool val) {
         case BTN_A:
         case BTN_B:
         case BTN_C:
+        case BTN_D:
+        case BTN_E:
+        case BTN_F:
+        case BTN_G:
+        case BTN_H:
         case BTN_REC: {
             if (val) {
                 sequence_handle_button_drummachine(btn);
@@ -143,27 +154,14 @@ static void ui_buttons_drummachine(enum buttons btn, bool val) {
     }
 }
 
-
-#include "pulse.h"
-
-
 static void ui_buttons(enum buttons btn, bool val) {
     switch (btn) {
         case BTN_CLICK: {
             if (val) {
-
-
-
-                pulse_trigger_out(0, 42);
-                pulse_trigger_led(0, 42);
-
-
-
                 ui_mode = (ui_mode + 1) % UI_NUM_MODES;
 
-                // allow other ui mdoes only in drumkit mode
-                if (machine_mode == MODE_LOOPSTATION)
-                {
+                // allow other ui modes only in drumkit mode
+                if (machine_mode == MODE_LOOPSTATION) {
                     ui_mode = 0;
                 }
 
@@ -215,12 +213,27 @@ void ui_encoder(int32_t val) {
             while (tmp >= MACHINE_NUM_MODES) {
                 tmp -= MACHINE_NUM_MODES;
             }
+
+            enum machine_modes prev_mode = machine_mode;
             machine_mode = tmp;
 
             printf("mode add %"PRIi32" now %d\n", val, machine_mode);
 
-            // reset sequence
-            sequence_init();
+            if (prev_mode != machine_mode) {
+                // reset sequence
+                sequence_init();
+
+                // turn off all LEDs
+                for (uint i = 0; i < LED_COUNT; i++) {
+                    led_set(i, false);
+                }
+
+                // enable static LEDs in loopstation mode
+                if (machine_mode == MODE_LOOPSTATION) {
+                    led_set(NUM_CHANNELS, true);
+                    led_set(NUM_CHANNELS + 4, true);
+                }
+            }
             break;
         }
 
@@ -247,6 +260,12 @@ void ui_encoder(int32_t val) {
 
 void ui_init(void) {
     buttons_callback(ui_buttons);
+
+    // enable static LEDs in loopstation mode
+    machine_mode = MODE_LOOPSTATION;
+    led_set(NUM_CHANNELS, true);
+    led_set(NUM_CHANNELS + 4, true);
+
     ui_redraw();
 }
 
