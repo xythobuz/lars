@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <inttypes.h>
+#include <math.h>
 #include "pico/stdlib.h"
 
 #include "adc.h"
@@ -27,12 +28,13 @@
 #include "sequence.h"
 #include "ui.h"
 
-#define REDRAW_MS 2000
+#define BAT_FETCH_MS 66
 
 static bool rec_held_down = false;
 static enum ui_modes ui_mode = 0;
 static enum machine_modes machine_mode = 0;
-static uint32_t last_redraw = 0;
+static uint32_t last_bat_fetch = 0;
+static float last_voltage = 0.0f;
 
 enum machine_modes ui_get_machinemode(void) {
     return machine_mode;
@@ -97,7 +99,7 @@ static void ui_redraw(void) {
         }
     }
 
-    snprintf(bat, sizeof(bat) - 1, "Bat: %.2fV", bat_get());
+    snprintf(bat, sizeof(bat) - 1, "Bat: %.2fV", last_voltage);
     lcd_draw(mode, val, bat);
 }
 
@@ -115,11 +117,20 @@ static void ui_buttons_loopstation(enum buttons btn, bool val) {
             break;
         }
 
-        case BTN_REC:
+        case BTN_REC: {
+            // reset sequence
+            sequence_init();
+            ui_redraw();
+            break;
+        }
+
         case BTN_D:
         case BTN_H: {
             rec_held_down = val;
             sequence_looptime(!val);
+            if (!val) {
+                ui_redraw();
+            }
             break;
         }
 
@@ -271,8 +282,13 @@ void ui_init(void) {
 
 void ui_run(void) {
     uint32_t now = to_ms_since_boot(get_absolute_time());
-    if (now >= (last_redraw + REDRAW_MS)) {
-        ui_redraw();
-        last_redraw = now;
+    if (now >= (last_bat_fetch + BAT_FETCH_MS)) {
+        last_bat_fetch = now;
+
+        float volt = bat_get();
+        if (fabsf(volt - last_voltage) >= 0.01f) {
+            last_voltage = volt;
+            ui_redraw();
+        }
     }
 }

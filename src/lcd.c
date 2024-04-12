@@ -119,7 +119,7 @@ void lcd_draw(const char *mode, const char *val, const char *bat) {
 
 void lcd_draw_bye(void) {
     ssd1306_clear(&disp);
-    ssd1306_draw_string(&disp, 0, 0, 3, "Boot");
-    ssd1306_draw_string(&disp, 0, LCD_HEIGHT / 2, 3, "loader");
+    ssd1306_draw_string(&disp, 6, 5, 3, " Boot-");
+    ssd1306_draw_string(&disp, 8, LCD_HEIGHT / 2 + 5, 3, "loader");
     ssd1306_show(&disp);
 }

@@ -32,7 +32,7 @@
 #include "main.h"
 
 #define WATCHDOG_PERIOD_MS 100
-#define LOGO_INIT_MS 1500
+#define LOGO_INIT_MS 1000
 
 static const uint gpio_hw_detect = 21;
 
@@ -89,9 +89,11 @@ int main(void) {
         sleep_ms(1);
     }
 
-    if (debug_buttons[BTN_REC]) {
+    if (debug_buttons[BTN_REC] && debug_buttons[BTN_CLICK]) {
         lcd_debug_buttons();
-    } else if (!debug_buttons[BTN_H]) {
+    } else if (debug_buttons[BTN_REC] && (!debug_buttons[BTN_CLICK])) {
+        // skip splash screen
+    } else {
         // show splash for a bit and animate LEDs
         for (uint i = 0; i < LED_COUNT; i++) {
             handle_serial_input();
