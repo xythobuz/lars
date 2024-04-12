@@ -35,6 +35,7 @@ static enum ui_modes ui_mode = 0;
 static enum machine_modes machine_mode = 0;
 static uint32_t last_bat_fetch = 0;
 static float last_voltage = 0.0f;
+static float last_percentage = 0.0f;
 
 enum machine_modes ui_get_machinemode(void) {
     return machine_mode;
@@ -99,7 +100,7 @@ static void ui_redraw(void) {
         }
     }
 
-    snprintf(bat, sizeof(bat) - 1, "Bat: %.2fV", last_voltage);
+    snprintf(bat, sizeof(bat) - 1, "Bat: %.1f%% (%.2fV)", last_percentage, last_voltage);
     lcd_draw(mode, val, bat);
 }
 
@@ -286,8 +287,11 @@ void ui_run(void) {
         last_bat_fetch = now;
 
         float volt = bat_get();
-        if (fabsf(volt - last_voltage) >= 0.01f) {
+        float percentage = bat_to_percent(volt);
+        if ((fabsf(volt - last_voltage) >= 0.01f)
+                || (fabsf(percentage - last_percentage) >= 0.1f)) {
             last_voltage = volt;
+            last_percentage = percentage;
             ui_redraw();
         }
     }

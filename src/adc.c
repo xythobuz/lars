@@ -17,10 +17,13 @@
  */
 
 #include <stdio.h>
+#include <math.h>
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 
 #include "adc.h"
+
+#define LIPO_USE_PERCENTAGE_CURVE
 
 #define ADC_NUM 2
 #define ADC_PIN (26 + ADC_NUM)
@@ -32,8 +35,13 @@
 #define BAT_R1 10000.0f
 #define BAT_R2 18000.0f
 
-#define FILTER_OLD 0.75f
+#define FILTER_OLD 0.95f
 #define FILTER_NEW (1.0f - FILTER_OLD)
+
+#ifndef LIPO_USE_PERCENTAGE_CURVE
+static const float full_battery = 4.1f;
+static const float empty_battery = 3.2f;
+#endif // ! LIPO_USE_PERCENTAGE_CURVE
 
 static float filtered = 0.0f;
 
@@ -55,4 +63,23 @@ void bat_init(void) {
 float bat_get(void) {
     filtered = (filtered * FILTER_OLD) + (bat_read() * FILTER_NEW);
     return filtered;
+}
+
+float bat_to_percent(float voltage) {
+    float percentage = 0.0f;
+
+#ifdef LIPO_USE_PERCENTAGE_CURVE
+    /*
+     * Try to linearize the LiPo discharge curve.
+     * https://electronics.stackexchange.com/a/551667
+     *
+     * Seems to work relatively well, although
+     * "stopping" at 3.5V feels a bit high to me.
+     */
+    percentage = 123.0f - (123.0f / powf(1.0f + powf(voltage / 3.7f, 80.0f), 0.165f));
+#else // LIPO_USE_PERCENTAGE_CURVE
+    percentage = 100.0f * ((voltage - empty_battery) / (full_battery - empty_battery));
+#endif // LIPO_USE_PERCENTAGE_CURVE
+
+    return MIN(MAX(percentage, 0.0f), 100.0f);
 }

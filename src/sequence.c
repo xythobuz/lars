@@ -220,6 +220,7 @@ void sequence_run(void) {
                 pulse_trigger_out(ch, channel_times[ch]);
                 if (ui_get_machinemode() == MODE_LOOPSTATION) {
                     pulse_trigger_led(ch, channel_times[ch]);
+                    pulse_trigger_led(ch + 4, channel_times[ch]);
                 }
             }
         }

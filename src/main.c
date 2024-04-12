@@ -26,6 +26,7 @@
 #include "encoder.h"
 #include "lcd.h"
 #include "led.h"
+#include "logo.h"
 #include "pulse.h"
 #include "sequence.h"
 #include "ui.h"
@@ -81,6 +82,11 @@ int main(void) {
     lcd_init();
     led_init();
 
+    // show logo
+    lcd_draw_bitmap(logo_data,
+                    LOGO_WIDTH, LOGO_HEIGHT,
+                    0, 0);
+
     // read out button state for debug options
     buttons_callback(debug_buttons_callback);
     for (uint i = 0; i < (DEBOUNCE_DELAY_MS + 5); i++) {
@@ -89,6 +95,7 @@ int main(void) {
         sleep_ms(1);
     }
 
+    // handle special button combos on boot
     if (debug_buttons[BTN_REC] && debug_buttons[BTN_CLICK]) {
         lcd_debug_buttons();
     } else if (debug_buttons[BTN_REC] && (!debug_buttons[BTN_CLICK])) {

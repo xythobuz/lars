@@ -16,16 +16,11 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include "pico/stdlib.h"
 #include "hardware/i2c.h"
 
 #include "ssd1306.h"
 
 #include "buttons.h"
-#include "logo.h"
 #include "main.h"
 #include "lcd.h"
 
@@ -37,7 +32,7 @@ static const uint gpio_num_v2[2] = { 16, 17 };
 
 #define LCD_ADDR 0x3C
 
-static ssd1306_t disp;
+static ssd1306_t disp = {0};
 static bool buttons[NUM_BTNS] = {0};
 static bool changed = true;
 
@@ -48,72 +43,89 @@ static void lcd_debug_buttons_callback(enum buttons btn, bool v) {
 
 void lcd_debug_buttons(void) {
     buttons_callback(lcd_debug_buttons_callback);
+
     while (1) {
         buttons_run();
         handle_serial_input();
+
         if (changed) {
             changed = false;
+
             ssd1306_clear(&disp);
             ssd1306_draw_string(&disp, 0, 0, 3, "Buttons");
+
             for (uint i = 0; i < NUM_BTNS; i++) {
+                if ((hw_type == HW_PROTOTYPE) && (i >= BTN_D) && (i <= BTN_H)) {
+                    continue;
+                }
+
                 ssd1306_draw_char(&disp,
-                                    i * 12, LCD_HEIGHT - 20 - 16 - 1,
-                                    2, '0' + i);
+                                  i * 12, LCD_HEIGHT - 20 - 16 - 1,
+                                  2, '0' + i);
+
                 if (buttons[i]) {
                     ssd1306_draw_square(&disp,
                                         i * 12, LCD_HEIGHT - 20 - 1,
                                         10, 20);
                 } else {
                     ssd1306_draw_empty_square(&disp,
-                                                i * 12, LCD_HEIGHT - 20 - 1,
-                                                10, 20);
+                                              i * 12, LCD_HEIGHT - 20 - 1,
+                                              10, 20);
                 }
             }
+
             ssd1306_show(&disp);
         }
     }
 }
 
+void lcd_draw_bitmap(uint8_t *data, int width, int height, int x_off, int y_off) {
+    ssd1306_clear(&disp);
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            const uint pos = y * width + x;
+            const uint bit = 7 - (pos % 8);
+            if (data[pos / 8] & (1 << bit)) {
+                ssd1306_draw_pixel(&disp, x + x_off, y + y_off);
+            }
+        }
+    }
+
+    ssd1306_show(&disp);
+}
+
 void lcd_init(void) {
     if (hw_type == HW_PROTOTYPE) {
-        i2c_init(gpio_i2c_proto, 1000 * 1000);
+        i2c_init(gpio_i2c_proto, 2UL * 1000UL * 1000UL);
+
         for (uint i = 0; i < sizeof(gpio_num_proto) / sizeof(gpio_num_proto[0]); i++) {
             gpio_set_function(gpio_num_proto[i], GPIO_FUNC_I2C);
             gpio_pull_up(gpio_num_proto[i]);
         }
 
-        disp.external_vcc = false;
-        ssd1306_init(&disp, LCD_WIDTH, LCD_HEIGHT, LCD_ADDR, gpio_i2c_proto);
+        ssd1306_init(&disp,
+                     LCD_WIDTH, LCD_HEIGHT,
+                     LCD_ADDR, gpio_i2c_proto);
     } else if (hw_type == HW_V2) {
-        i2c_init(gpio_i2c_v2, 1000 * 1000);
+        i2c_init(gpio_i2c_v2, 2UL * 1000UL * 1000UL);
+
         for (uint i = 0; i < sizeof(gpio_num_v2) / sizeof(gpio_num_v2[0]); i++) {
             gpio_set_function(gpio_num_v2[i], GPIO_FUNC_I2C);
             gpio_pull_up(gpio_num_v2[i]);
         }
 
-        disp.external_vcc = false;
-        ssd1306_init(&disp, LCD_WIDTH, LCD_HEIGHT, LCD_ADDR, gpio_i2c_v2);
+        ssd1306_init(&disp,
+                     LCD_WIDTH, LCD_HEIGHT,
+                     LCD_ADDR, gpio_i2c_v2);
     }
-
-    // show logo
-    ssd1306_clear(&disp);
-    for (uint y = 0; y < LOGO_HEIGHT; y++) {
-        for (uint x = 0; x < LOGO_WIDTH; x++) {
-            const uint pos = y * LOGO_WIDTH + x;
-            const uint bit = 7 - (pos % 8);
-            if (logo_data[pos / 8] & (1 << bit)) {
-                ssd1306_draw_pixel(&disp, x, y);
-            }
-        }
-    }
-    ssd1306_show(&disp);
 }
 
 void lcd_draw(const char *mode, const char *val, const char *bat) {
     ssd1306_clear(&disp);
     ssd1306_draw_string(&disp, 0, 0, 2, mode);
     ssd1306_draw_string(&disp, 0, 20, 4, val);
-    ssd1306_draw_string(&disp, 0, LCD_HEIGHT - 1 - 10, 1, bat);
+    ssd1306_draw_string(&disp, 0, LCD_HEIGHT - 8, 1, bat);
     ssd1306_show(&disp);
 }
 

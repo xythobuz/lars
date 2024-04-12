@@ -21,5 +21,6 @@
 
 void bat_init(void);
 float bat_get(void);
+float bat_to_percent(float voltage);
 
 #endif // __ADC_H__
