@@ -25,6 +25,14 @@ enum buttons {
     BTN_A = 0,
     BTN_B,
     BTN_C,
+
+    // only on LARS V2
+    BTN_D,
+    BTN_E,
+    BTN_F,
+    BTN_G,
+    BTN_H,
+
     BTN_REC,
     BTN_CLICK,
     NUM_BTNS // count

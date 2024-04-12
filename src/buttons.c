@@ -19,16 +19,38 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 
+#include "main.h"
 #include "buttons.h"
 
 #define DEBOUNCE_DELAY_MS 50
 
-static const uint gpio_num[NUM_BTNS] = {
+static const uint gpio_num_proto[NUM_BTNS] = {
     8, // BTN_A
     9, // BTN_B
     12, // BTN_C
+
+    // not existing on prototype
+    0xFF, // BTN_D
+    0xFF, // BTN_E
+    0xFF, // BTN_F
+    0xFF, // BTN_G
+    0xFF, // BTN_H
+
     14, // BTN_REC
     16, // BTN_CLICK
+};
+
+static const uint gpio_num_v2[NUM_BTNS] = {
+    1, // BTN_A / COL 0
+    4, // BTN_B / COL 1
+    5, // BTN_C / COL 2
+    0, // BTN_D / ROW 0
+    2, // BTN_E / ROW 1
+    3, // BTN_F / ROW 2
+    0xFF, // BTN_G
+    0xFF, // BTN_H
+    0xFF, // BTN_REC
+    20, // BTN_CLICK
 };
 
 struct button_state {
@@ -41,9 +63,20 @@ static void (*callback)(enum buttons, bool) = NULL;
 
 void buttons_init(void) {
     for (uint i = 0; i < NUM_BTNS; i++) {
-        gpio_init(gpio_num[i]);
-        gpio_set_dir(gpio_num[i], GPIO_IN);
-        gpio_pull_up(gpio_num[i]);
+        uint n = 0xFF;
+        if (hw_type == HW_PROTOTYPE) {
+            n = gpio_num_proto[i];
+        } else if (hw_type == HW_V2) {
+            n = gpio_num_v2[i];
+        }
+
+        if (n >= 0xFF) {
+            continue;
+        }
+
+        gpio_init(n);
+        gpio_set_dir(n, GPIO_IN);
+        gpio_pull_up(n);
 
         buttons[i].last_time = 0;
         buttons[i].current_state = false;
@@ -55,26 +88,44 @@ void buttons_callback(void (*fp)(enum buttons, bool)) {
     callback = fp;
 }
 
-void buttons_run(void) {
-    for (uint i = 0; i < NUM_BTNS; i++) {
-        bool state = !gpio_get(gpio_num[i]);
-        uint32_t now = to_ms_since_boot(get_absolute_time());
+static void button_run_single(bool state, uint i) {
+    uint32_t now = to_ms_since_boot(get_absolute_time());
 
-        if (state != buttons[i].last_state) {
-            buttons[i].last_time = now;
-        }
+    if (state != buttons[i].last_state) {
+        buttons[i].last_time = now;
+    }
 
-        if ((now - buttons[i].last_time) > DEBOUNCE_DELAY_MS) {
-            if (state != buttons[i].current_state) {
-                //printf("btn %d now %s\n", i, state ? "pressed" : "released");
+    if ((now - buttons[i].last_time) > DEBOUNCE_DELAY_MS) {
+        if (state != buttons[i].current_state) {
+            printf("btn %d now %s\n", i, state ? "pressed" : "released");
 
-                buttons[i].current_state = state;
-                if (callback) {
-                    callback(i, state);
-                }
+            buttons[i].current_state = state;
+            if (callback) {
+                callback(i, state);
             }
         }
+    }
 
-        buttons[i].last_state = state;
+    buttons[i].last_state = state;
+}
+
+static void buttons_run_proto(void) {
+    for (uint i = 0; i < NUM_BTNS; i++) {
+        if (gpio_num_proto[i] >= 0xFF) {
+            continue;
+        }
+
+        bool state = !gpio_get(gpio_num_proto[i]);
+        button_run_single(state, i);
+    }
+}
+
+void buttons_run(void) {
+    if (hw_type == HW_PROTOTYPE) {
+        buttons_run_proto();
+    } else if (hw_type == HW_V2) {
+        // TODO read matrix
+
+        button_run_single(!gpio_get(gpio_num_v2[BTN_CLICK]), BTN_CLICK);
     }
 }

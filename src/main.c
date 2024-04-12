@@ -32,6 +32,10 @@
 #include "main.h"
 
 #define WATCHDOG_PERIOD_MS 100
+#define LOGO_INIT_MS 1500
+
+static const uint gpio_hw_detect = 21;
+enum hw_versions hw_type = HW_UNKNOWN;
 
 static void reset_to_bootloader(void) {
 #ifdef PICO_DEFAULT_LED_PIN
@@ -42,20 +46,39 @@ static void reset_to_bootloader(void) {
 }
 
 int main(void) {
-    //watchdog_enable(WATCHDOG_PERIOD_MS, 1);
     stdio_init_all();
+
+    gpio_init(gpio_hw_detect);
+    gpio_set_dir(gpio_hw_detect, GPIO_IN);
+    gpio_pull_up(gpio_hw_detect);
+    if (gpio_get(gpio_hw_detect)) {
+        hw_type = HW_PROTOTYPE;
+    } else {
+        hw_type = HW_V2;
+    }
+
     bat_init();
     buttons_init();
     encoder_init();
     lcd_init();
     led_init();
 
-    // show splash for a bit
-    sleep_ms(500);
+    // show splash for a bit and animate LEDs
+    for (uint i = 0; i < LED_COUNT; i++) {
+        led_set(i, true);
+        sleep_ms(LOGO_INIT_MS / LED_COUNT);
+    }
+
+    // turn off LEDs at end of init
+    for (uint i = 0; i < LED_COUNT; i++) {
+        led_set(i, false);
+    }
 
     sequence_init();
     ui_init();
+
     printf("init done\n");
+    watchdog_enable(WATCHDOG_PERIOD_MS, 1);
 
     int32_t last_epos = 0;
 

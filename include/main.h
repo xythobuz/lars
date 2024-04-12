@@ -19,6 +19,12 @@
 #ifndef __MAIN_H__
 #define __MAIN_H__
 
+enum hw_versions {
+    HW_UNKNOWN = 0,
+    HW_PROTOTYPE,
+    HW_V2,
+};
 
+extern enum hw_versions hw_type;
 
 #endif // __MAIN_H__

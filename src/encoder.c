@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 
+#include "main.h"
 #include "encoder.h"
 
 #define LATCH0 0
@@ -24,8 +25,12 @@
 
 #define ENCODER_MODE FOUR3
 
-static const uint gpio_num[2] = {
+static const uint gpio_num_proto[2] = {
     17, 18
+};
+
+static const uint gpio_num_v2[2] = {
+    19, 18
 };
 
 static const int8_t KNOBDIR[] = {
@@ -42,12 +47,23 @@ static int32_t positionExtPrev;
 
 void encoder_init(void) {
     for (uint i = 0; i < 2; i++) {
-        gpio_init(gpio_num[i]);
-        gpio_set_dir(gpio_num[i], GPIO_IN);
-        gpio_pull_up(gpio_num[i]);
+        if (hw_type == HW_PROTOTYPE) {
+            gpio_init(gpio_num_proto[i]);
+            gpio_set_dir(gpio_num_proto[i], GPIO_IN);
+            gpio_pull_up(gpio_num_proto[i]);
+        } else if (hw_type == HW_V2) {
+            gpio_init(gpio_num_v2[i]);
+            gpio_set_dir(gpio_num_v2[i], GPIO_IN);
+            gpio_pull_up(gpio_num_v2[i]);
+        }
     }
 
-    oldState = gpio_get(gpio_num[0]) | (gpio_get(gpio_num[1]) << 1);
+    if (hw_type == HW_PROTOTYPE) {
+        oldState = gpio_get(gpio_num_proto[0]) | (gpio_get(gpio_num_proto[1]) << 1);
+    } else if (hw_type == HW_V2) {
+        oldState = gpio_get(gpio_num_v2[0]) | (gpio_get(gpio_num_v2[1]) << 1);
+    }
+
     position = 0;
     positionExt = 0;
     positionExtPrev = 0;
@@ -59,7 +75,12 @@ int32_t encoder_pos(void)
 }
 
 void encoder_run(void) {
-    int8_t thisState = gpio_get(gpio_num[0]) | (gpio_get(gpio_num[1]) << 1);
+    int8_t thisState = 0;
+    if (hw_type == HW_PROTOTYPE) {
+        thisState = gpio_get(gpio_num_proto[0]) | (gpio_get(gpio_num_proto[1]) << 1);
+    } else if (hw_type == HW_V2) {
+        thisState = gpio_get(gpio_num_v2[0]) | (gpio_get(gpio_num_v2[1]) << 1);
+    }
 
     if (oldState != thisState) {
         position += KNOBDIR[thisState | (oldState << 2)];

@@ -22,7 +22,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#if 0
 #define LED_COUNT 4
+#else
+#define LED_COUNT 8
+#endif
 
 void led_init(void);
 void led_set(uint32_t i, bool v);

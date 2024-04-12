@@ -143,10 +143,22 @@ static void ui_buttons_drummachine(enum buttons btn, bool val) {
     }
 }
 
+
+#include "pulse.h"
+
+
 static void ui_buttons(enum buttons btn, bool val) {
     switch (btn) {
         case BTN_CLICK: {
             if (val) {
+
+
+
+                pulse_trigger_out(0, 42);
+                pulse_trigger_led(0, 42);
+
+
+
                 ui_mode = (ui_mode + 1) % UI_NUM_MODES;
 
                 // allow other ui mdoes only in drumkit mode

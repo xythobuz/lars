@@ -23,9 +23,15 @@
 #include "sequence.h"
 #include "led.h"
 
+#if 0
 static const uint led_gpio_num[LED_COUNT] = {
     10, 11, 13, 15,
 };
+#else
+static const uint led_gpio_num[LED_COUNT] = {
+    6, 7, 8, 9, 10, 11, 12, 13,
+};
+#endif
 
 static const uint ch_gpio_num[NUM_CHANNELS] = {
     22, 26, 27,
