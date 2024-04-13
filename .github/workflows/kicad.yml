@@ -55,6 +55,7 @@ jobs:
       - name: Generate fabrication files
         run: |
           ./pcb/generate_fab.sh
+          ./pcb2/generate_fab.sh
 
       - name: Upload board files
         uses: actions/upload-artifact@v4.0.0
@@ -62,8 +63,20 @@ jobs:
           name: prototype-pcb
           path: pcb/fabrication
 
+      - name: Upload board files
+        uses: actions/upload-artifact@v4.0.0
+        with:
+          name: v2-pcb
+          path: pcb2/fabrication
+
+      - name: Rename release files
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          mv pcb/fab.zip fab_proto.zip
+          mv pcb2/fab.zip fab_v2.zip
+
       - name: Upload release files
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
-          files: pcb/fab.zip
+          files: fab_proto.zip fab_v2.zip
