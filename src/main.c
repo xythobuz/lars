@@ -100,6 +100,23 @@ int main(void) {
         lcd_debug_buttons();
     } else if (debug_buttons[BTN_REC] && (!debug_buttons[BTN_CLICK])) {
         // skip splash screen
+    } else if ((!debug_buttons[BTN_REC]) && debug_buttons[BTN_CLICK]) {
+        // show version info
+        lcd_draw_version();
+
+        // wait until button is released
+        uint32_t last = to_ms_since_boot(get_absolute_time());
+        bool state = false;
+        while (debug_buttons[BTN_CLICK]) {
+            buttons_run();
+            handle_serial_input();
+            uint32_t now = to_ms_since_boot(get_absolute_time());
+            if ((now - last) >= 250) {
+                state = !state;
+                led_set(0, state);
+            }
+        }
+        led_set(0, false);
     } else {
         // show splash for a bit and animate LEDs
         for (uint i = 0; i < LED_COUNT; i++) {

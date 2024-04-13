@@ -135,3 +135,10 @@ void lcd_draw_bye(void) {
     ssd1306_draw_string(&disp, 8, LCD_HEIGHT / 2 + 5, 3, "loader");
     ssd1306_show(&disp);
 }
+
+void lcd_draw_version(void) {
+    ssd1306_clear(&disp);
+    // TODO
+    ssd1306_draw_string(&disp, 0, LCD_HEIGHT / 2 - 4, 1, "TODO");
+    ssd1306_show(&disp);
+}

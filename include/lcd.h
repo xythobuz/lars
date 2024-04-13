@@ -28,6 +28,7 @@ void lcd_init(void);
 void lcd_draw(const char *mode, const char *val, const char *bat);
 void lcd_draw_bye(void);
 void lcd_draw_bitmap(uint8_t *data, int width, int height, int x_off, int y_off);
+void lcd_draw_version(void);
 
 void lcd_debug_buttons(void);
 
