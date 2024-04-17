@@ -35,7 +35,7 @@
 #define BAT_R1 10000.0f
 #define BAT_R2 18000.0f
 
-#define FILTER_OLD 0.95f
+#define FILTER_OLD 0.999f
 #define FILTER_NEW (1.0f - FILTER_OLD)
 
 #ifndef LIPO_USE_PERCENTAGE_CURVE
