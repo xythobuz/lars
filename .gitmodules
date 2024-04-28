@@ -3,7 +3,7 @@
 	url = https://github.com/raspberrypi/pico-sdk
 [submodule "pico-ssd1306"]
 	path = pico-ssd1306
-	url = https://github.com/daschr/pico-ssd1306
+	url = https://github.com/xythobuz/pico-ssd1306
 [submodule "docs/svg-pan-zoom"]
 	path = docs/svg-pan-zoom
 	url = https://github.com/WebSVG/svg-pan-zoom

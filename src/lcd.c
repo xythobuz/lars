@@ -43,6 +43,7 @@ static const uint gpio_num_v2[2] = { 16, 17 };
 static ssd1306_t disp = {0};
 static bool buttons[NUM_BTNS] = {0};
 static bool changed = true;
+static bool found = false;
 
 static void lcd_debug_buttons_callback(enum buttons btn, bool v) {
     buttons[btn] = v;
@@ -50,6 +51,10 @@ static void lcd_debug_buttons_callback(enum buttons btn, bool v) {
 }
 
 void lcd_debug_buttons(void) {
+    if (!found) {
+        return;
+    }
+
     buttons_callback(lcd_debug_buttons_callback);
 
     while (1) {
@@ -90,6 +95,10 @@ void lcd_debug_buttons(void) {
 }
 
 void lcd_draw_bitmap(uint8_t *data, int width, int height, int x_off, int y_off) {
+    if (!found) {
+        return;
+    }
+
     ssd1306_clear(&disp);
 
     for (int y = 0; y < height; y++) {
@@ -114,9 +123,10 @@ void lcd_init(void) {
             gpio_pull_up(gpio_num_proto[i]);
         }
 
-        ssd1306_init(&disp,
-                     LCD_WIDTH, LCD_HEIGHT,
-                     LCD_ADDR, gpio_i2c_proto);
+        bool r = ssd1306_init(&disp,
+                              LCD_WIDTH, LCD_HEIGHT,
+                              LCD_ADDR, gpio_i2c_proto);
+        found = r;
     } else if (hw_type == HW_V2) {
         i2c_init(gpio_i2c_v2, 2UL * 1000UL * 1000UL);
 
@@ -125,13 +135,18 @@ void lcd_init(void) {
             gpio_pull_up(gpio_num_v2[i]);
         }
 
-        ssd1306_init(&disp,
-                     LCD_WIDTH, LCD_HEIGHT,
-                     LCD_ADDR, gpio_i2c_v2);
+        bool r = ssd1306_init(&disp,
+                              LCD_WIDTH, LCD_HEIGHT,
+                              LCD_ADDR, gpio_i2c_v2);
+        found = r;
     }
 }
 
 void lcd_draw(const char *mode, const char *val, const char *bat) {
+    if (!found) {
+        return;
+    }
+
     ssd1306_clear(&disp);
     ssd1306_draw_string(&disp, 0, 0, 2, mode);
     ssd1306_draw_string(&disp, 0, 20, 4, val);
@@ -140,6 +155,10 @@ void lcd_draw(const char *mode, const char *val, const char *bat) {
 }
 
 void lcd_draw_bye(void) {
+    if (!found) {
+        return;
+    }
+
     ssd1306_clear(&disp);
     ssd1306_draw_string(&disp, 6, 5, 3, " Boot-");
     ssd1306_draw_string(&disp, 8, LCD_HEIGHT / 2 + 5, 3, "loader");
@@ -147,6 +166,10 @@ void lcd_draw_bye(void) {
 }
 
 void lcd_draw_version(void) {
+    if (!found) {
+        return;
+    }
+
     ssd1306_clear(&disp);
 
     ssd1306_draw_string(&disp, 0, 0, 2,
