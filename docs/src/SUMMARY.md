@@ -24,3 +24,4 @@
 - [Usage Guide](./usage.md)
   - [Loop Station](./loopstation.md)
   - [Drum Machine](./drummachine.md)
+  - [MIDI](./midi.md)

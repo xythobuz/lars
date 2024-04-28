@@ -8,6 +8,10 @@ It is planned to be used without a case.
 
 You can [download the Gerber files to order PCBs online](./plot/fab_pcb2.zip).
 
+**Warning:**
+Revision 1 is missing diodes on the button matrix.
+So when holding down three or more buttons simultaneously you get ghosting on other buttons.
+
 ## Bill of Materials
 
 These are all the parts required to assemble the V2 PCB.
