@@ -21,6 +21,7 @@
 #include "pico/stdlib.h"
 
 #include "led.h"
+#include "log.h"
 #include "sequence.h"
 #include "pulse.h"
 
@@ -35,14 +36,14 @@ static void pulse_trigger(uint32_t i, uint32_t t_ms, bool out) {
         if (out_time[i % NUM_CHANNELS] == 0) {
             out_time[i % NUM_CHANNELS] = off_t;
         } else {
-            printf("%s: skip retrigger out %"PRIu32"\n", __func__, i);
+            debug("skip retrigger out %"PRIu32, i);
         }
     } else {
         led_set(i, true);
         if (led_time[i % LED_COUNT] == 0) {
             led_time[i % LED_COUNT] = off_t;
         } else {
-            printf("%s: skip retrigger led %"PRIu32"\n", __func__, i);
+            debug("skip retrigger led %"PRIu32, i);
         }
     }
 }

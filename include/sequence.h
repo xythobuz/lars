@@ -44,14 +44,14 @@ void sequence_init(void);
 void sequence_set_bpm(uint32_t new_bpm);
 uint32_t sequence_get_bpm(void);
 
-void sequence_set_ms(uint32_t new_ms);
-uint32_t sequence_get_ms(void);
-
 void sequence_set_beats(uint32_t new_beats);
 uint32_t sequence_get_beats(void);
 
 void sequence_set_bank(uint32_t new_bank);
 uint32_t sequence_get_bank(void);
+
+uint32_t sequence_get_max_banks(void);
+uint64_t sequence_get_us(void);
 
 void sequence_handle_button_loopstation(enum buttons btn, bool rec);
 void sequence_handle_button_drummachine(enum buttons btn);

@@ -31,6 +31,10 @@
 //#define DISABLE_CDC_DTR_CHECK
 #define DEBOUNCE_DELAY_MS 5
 
+#define BAT_FETCH_MS 66
+
+#define MAX_BPM 360
+
 // ----------------------------------------------------------------------------
 
 #define STR_HELPER(x) #x

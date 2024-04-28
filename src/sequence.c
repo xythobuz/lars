@@ -21,54 +21,58 @@
 #include "pico/stdlib.h"
 
 #include "led.h"
+#include "log.h"
 #include "pulse.h"
 #include "ui.h"
 #include "sequence.h"
 
 static const uint32_t channel_times[NUM_CHANNELS] = CH_GPIO_TIMINGS;
 
-static uint32_t ms_per_beat = 0;
+static uint64_t us_per_beat = 0;
+static uint64_t last_t = 0;
+static uint64_t beattimer_start = 0;
+
 static uint32_t beats = MAX_BEATS;
-static uint32_t last_t = 0;
 static uint32_t last_i = 0;
 static uint32_t bank = 0;
-static uint32_t beattimer_start = 0;
+static uint32_t max_banks_currently = 0;
 
 static enum channels sequence[MAX_BEATS] = {0};
 
 void sequence_init(void) {
-    ms_per_beat = 0;
+    us_per_beat = 0;
     beats = MAX_BEATS;
     last_t = to_ms_since_boot(get_absolute_time());
     last_i = 0;
+    max_banks_currently = (beats + (NUM_BTNS - 1)) / NUM_BTNS;
 
     for (uint i = 0; i < MAX_BEATS; i++) {
         sequence[i] = 0;
     }
 }
 
+uint32_t sequence_get_max_banks(void) {
+    return max_banks_currently;
+}
+
 void sequence_set_bpm(uint32_t new_bpm) {
-    ms_per_beat = 60000 / new_bpm / beats;
-    printf("bpm now %"PRIu32" = %"PRIu32"ms\n", new_bpm, ms_per_beat);
+    us_per_beat = (60UL * 1000UL * 1000UL) / new_bpm;
+    debug("bpm @ %"PRIu64"us = %"PRIu64"us", us_per_beat, us_per_beat / beats);
 }
 
 uint32_t sequence_get_bpm(void) {
-    return 60000 / (ms_per_beat * beats);
-}
-
-void sequence_set_ms(uint32_t new_ms) {
-    ms_per_beat = new_ms;
-}
-
-uint32_t sequence_get_ms(void) {
-    return ms_per_beat;
+    if (us_per_beat == 0) {
+        return 0;
+    }
+    return (60UL * 1000UL * 1000UL) / us_per_beat;
 }
 
 void sequence_set_beats(uint32_t new_beats) {
     beats = (new_beats <= MAX_BEATS) ? new_beats : MAX_BEATS;
+    debug("beats @ %"PRIu64"us = %"PRIu64"us", us_per_beat, us_per_beat / beats);
 
-    uint32_t max_banks_currently = (beats + (NUM_BTNS - 1)) / NUM_BTNS;
-    bank = (bank < max_banks_currently) ? bank : max_banks_currently;
+    max_banks_currently = (beats + (NUM_BTNS - 1)) / NUM_BTNS;
+    bank = (bank < max_banks_currently) ? bank : 0;
 }
 
 uint32_t sequence_get_beats(void) {
@@ -77,13 +81,15 @@ uint32_t sequence_get_beats(void) {
 
 void sequence_set_bank(uint32_t new_bank) {
     uint32_t b = (new_bank < MAX_BANKS) ? new_bank : MAX_BANKS;
-
-    uint32_t max_banks_currently = (beats + (NUM_BTNS - 1)) / NUM_BTNS;
-    bank = (b < max_banks_currently) ? b : max_banks_currently;
+    bank = (b < max_banks_currently) ? b : 0;
 }
 
 uint32_t sequence_get_bank(void) {
     return bank;
+}
+
+uint64_t sequence_get_us(void) {
+    return us_per_beat;
 }
 
 static void sequence_set(uint32_t beat, enum channels ch, bool value) {
@@ -194,22 +200,23 @@ void sequence_handle_button_drummachine(enum buttons btn) {
 
 void sequence_looptime(bool fin) {
     if (!fin) {
-        beattimer_start = to_ms_since_boot(get_absolute_time());
+        beattimer_start = to_us_since_boot(get_absolute_time());
     } else {
-        if (ms_per_beat == 0) {
-            uint32_t now = to_ms_since_boot(get_absolute_time());
-            uint32_t diff = now - beattimer_start;
-            ms_per_beat = diff / beats;
-            printf("looptime: diff=%"PRIu32"ms per_beat=%"PRIu32"ms\n", diff, ms_per_beat);
+        if (us_per_beat == 0) {
+            uint64_t now = to_us_since_boot(get_absolute_time());
+            uint64_t diff = now - beattimer_start;
+            us_per_beat = diff;
+            debug("looptime @ %"PRIu64"us = %"PRIu64"us", us_per_beat, us_per_beat / beats);
         }
     }
 }
 
 void sequence_run(void) {
-    uint32_t now = to_ms_since_boot(get_absolute_time());
+    uint64_t now = to_us_since_boot(get_absolute_time());
+    uint64_t us = us_per_beat / beats;
 
-    if ((ms_per_beat > 0) && (now >= (last_t + ms_per_beat))) {
-        //printf("trigger\n");
+    if ((us > 0) && (now >= (last_t + us))) {
+        //debug("trigger");
 
         uint32_t i = last_i + 1;
         if (i >= beats) i = 0;

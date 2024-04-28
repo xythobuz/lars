@@ -20,6 +20,7 @@
 #include "pico/stdlib.h"
 
 #include "config.h"
+#include "log.h"
 #include "main.h"
 #include "buttons.h"
 
@@ -128,7 +129,7 @@ static void button_run_single(bool state, uint i) {
 
     if ((now - buttons[i].last_time) > DEBOUNCE_DELAY_MS) {
         if (state != buttons[i].current_state) {
-            printf("btn %d now %s\n", i, state ? "pressed" : "released");
+            //debug("btn %d now %s", i, state ? "pressed" : "released");
 
             buttons[i].current_state = state;
             if (callback) {

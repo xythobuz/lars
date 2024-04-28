@@ -21,17 +21,26 @@
 #include <math.h>
 #include "pico/stdlib.h"
 
+#include "config.h"
 #include "adc.h"
 #include "buttons.h"
 #include "lcd.h"
 #include "led.h"
+#include "log.h"
 #include "pulse.h"
 #include "sequence.h"
 #include "usb.h"
 #include "usb_midi.h"
 #include "ui.h"
 
-#define BAT_FETCH_MS 66
+#define KEEP_IN_RANGE(val, min, len) { \
+    while (val > (len - min)) {        \
+        val -= len;                    \
+    }                                  \
+    while (val < min) {                \
+        val += len;                    \
+    }                                  \
+}
 
 enum ui_settings {
     SETTING_MODE = 0,
@@ -41,8 +50,9 @@ enum ui_settings {
 
     // drum machine
     SETTING_BPM,
-    SETTING_BANK,
     SETTING_LENGTH,
+    SETTING_BANK,
+    SETTING_CHANNEL,
 
     // midi
     SETTING_CH_RX,
@@ -54,22 +64,25 @@ enum ui_settings {
 static bool allowed_settings[MACHINE_NUM_MODES][SETTING_NUM_MODES] = {
     // MODE_LOOPSTATION
     {
-        true, true,
-        false, false, false,
+        true, // SETTING_MODE
+        true,
+        false, false, false, false,
         false, false,
     },
 
     // MODE_DRUMMACHINE
     {
-        true, false,
-        true, true, true,
+        true, // SETTING_MODE
+        false,
+        true, true, true, true,
         false, false,
     },
 
     // MODE_MIDI
     {
-        true, false,
-        false, false, false,
+        true, // SETTING_MODE
+        false,
+        false, false, false, false,
         true, true,
     },
 };
@@ -94,15 +107,9 @@ static void ui_redraw(void) {
     char bat[64] = {0};
 
     switch (ui_setting) {
-        case SETTING_BPM: {
-            snprintf(mode, sizeof(mode) - 1, "BPM:");
-            snprintf(val, sizeof(val) - 1, "%"PRIu32, sequence_get_bpm());
-            break;
-        }
-
         case SETTING_MODE: {
-            if ((machine_mode == MODE_LOOPSTATION) && (sequence_get_ms() != 0)) {
-                snprintf(mode, sizeof(mode) - 1, "Mode: %"PRIu32"ms", sequence_get_ms());
+            if ((machine_mode == MODE_LOOPSTATION) && (sequence_get_us() != 0)) {
+                snprintf(mode, sizeof(mode) - 1, "Mode: %"PRIu64"ms", sequence_get_us() / 1000);
             } else {
                 snprintf(mode, sizeof(mode) - 1, "Mode:");
             }
@@ -134,6 +141,17 @@ static void ui_redraw(void) {
             break;
         }
 
+        case SETTING_SPEED:
+        case SETTING_BPM: {
+            if ((machine_mode == MODE_LOOPSTATION) && (sequence_get_us() != 0)) {
+                snprintf(mode, sizeof(mode) - 1, "BPM: %"PRIu64"ms", sequence_get_us() / 1000);
+            } else {
+                snprintf(mode, sizeof(mode) - 1, "BPM:");
+            }
+            snprintf(val, sizeof(val) - 1, "%"PRIu32, sequence_get_bpm());
+            break;
+        }
+
         case SETTING_LENGTH: {
             snprintf(mode, sizeof(mode) - 1, "Length:");
             snprintf(val, sizeof(val) - 1, "%"PRIu32, sequence_get_beats());
@@ -142,13 +160,7 @@ static void ui_redraw(void) {
 
         case SETTING_BANK: {
             snprintf(mode, sizeof(mode) - 1, "Bank:");
-            snprintf(val, sizeof(val) - 1, "%"PRIu32, sequence_get_bank());
-            break;
-        }
-
-        case SETTING_SPEED: {
-            snprintf(mode, sizeof(mode) - 1, "Speed:");
-            snprintf(val, sizeof(val) - 1, "%"PRIu32, sequence_get_ms());
+            snprintf(val, sizeof(val) - 1, "%"PRIu32, sequence_get_bank() + 1);
             break;
         }
 
@@ -164,8 +176,14 @@ static void ui_redraw(void) {
             break;
         }
 
+        case SETTING_CHANNEL: {
+            snprintf(mode, sizeof(mode) - 1, "Channel:");
+            snprintf(val, sizeof(val) - 1, "todo");
+            break;
+        }
+
         default: {
-            printf("%s: invalid setting: %d\n", __func__, ui_setting);
+            debug("invalid setting: %d", ui_setting);
             ui_setting = 0;
             ui_redraw();
             return;
@@ -208,7 +226,7 @@ static void ui_buttons_loopstation(enum buttons btn, bool val) {
         }
 
         default: {
-            printf("%s: invalid btn: %d\n", __func__, btn);
+            debug("invalid btn: %d", btn);
             break;
         }
     }
@@ -232,7 +250,7 @@ static void ui_buttons_drummachine(enum buttons btn, bool val) {
         }
 
         default: {
-            printf("%s: invalid btn: %d\n", __func__, btn);
+            debug("invalid btn: %d", btn);
             break;
         }
     }
@@ -291,7 +309,7 @@ static void ui_buttons(enum buttons btn, bool val) {
                 }
 
                 default: {
-                    printf("%s: invalid mode: %d\n", __func__, machine_mode);
+                    debug("invalid mode: %d", machine_mode);
                     machine_mode = 0;
                     ui_buttons(btn, val);
                     break;
@@ -308,20 +326,9 @@ void ui_encoder(int32_t val) {
     }
 
     switch (ui_setting) {
-        case SETTING_BPM: {
-            sequence_set_bpm(sequence_get_bpm() + val);
-            break;
-        }
-
         case SETTING_MODE: {
             int32_t tmp = machine_mode + val;
-
-            while (tmp < 0) {
-                tmp += MACHINE_NUM_MODES;
-            }
-            while (tmp >= MACHINE_NUM_MODES) {
-                tmp -= MACHINE_NUM_MODES;
-            }
+            KEEP_IN_RANGE(tmp, 0, MACHINE_NUM_MODES);
 
             // midi only when connected to pc
             if ((tmp == MODE_MIDI) && !usb_is_connected()) {
@@ -330,8 +337,6 @@ void ui_encoder(int32_t val) {
 
             enum machine_modes prev_mode = machine_mode;
             machine_mode = tmp;
-
-            printf("mode add %"PRIi32" now %d\n", val, machine_mode);
 
             if (prev_mode != machine_mode) {
                 // reset sequence
@@ -350,38 +355,55 @@ void ui_encoder(int32_t val) {
                     led_set(NUM_CHANNELS + 4, true);
                 } else if (machine_mode == MODE_DRUMMACHINE) {
                     sequence_set_beats(LED_COUNT);
+                    sequence_set_bpm(120);
                 }
             }
             break;
         }
 
+        case SETTING_SPEED:
+        case SETTING_BPM: {
+            int32_t tmp = sequence_get_bpm() + val;
+            KEEP_IN_RANGE(tmp, 1, MAX_BPM);
+            sequence_set_bpm(tmp);
+            break;
+        }
+
         case SETTING_LENGTH: {
-            sequence_set_beats(sequence_get_beats() + val);
+            int32_t tmp = sequence_get_beats() + val;
+            KEEP_IN_RANGE(tmp, 1, MAX_BEATS);
+            sequence_set_beats(tmp);
             break;
         }
 
         case SETTING_BANK: {
-            sequence_set_bank(sequence_get_bank() + val);
-            break;
-        }
-
-        case SETTING_SPEED: {
-            sequence_set_ms(sequence_get_ms() + val);
+            int32_t tmp = sequence_get_bank() + val;
+            KEEP_IN_RANGE(tmp, 0, (int32_t)sequence_get_max_banks());
+            sequence_set_bank(tmp);
             break;
         }
 
         case SETTING_CH_RX: {
-            midi_rx = (uint8_t)(midi_rx + val) % MIDI_MAX_CH;
+            int32_t tmp = midi_rx + val;
+            KEEP_IN_RANGE(tmp, 0, MIDI_MAX_CH);
+            midi_rx = tmp;
             break;
         }
 
         case SETTING_CH_TX: {
-            midi_tx = (uint8_t)(midi_tx + val) % MIDI_MAX_CH;
+            int32_t tmp = midi_tx + val;
+            KEEP_IN_RANGE(tmp, 0, MIDI_MAX_CH);
+            midi_tx = tmp;
+            break;
+        }
+
+        case SETTING_CHANNEL: {
+            // TODO
             break;
         }
 
         default: {
-            printf("%s: invalid setting: %d\n", __func__, ui_setting);
+            debug("invalid setting: %d", ui_setting);
             ui_setting = 0;
             ui_encoder(val);
             return;

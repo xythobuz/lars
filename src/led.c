@@ -21,6 +21,7 @@
 #include "pico/stdlib.h"
 
 #include "sequence.h"
+#include "log.h"
 #include "led.h"
 
 #if 0
@@ -51,11 +52,11 @@ void led_init(void) {
 void led_set(uint32_t i, bool v) {
     i %= LED_COUNT;
     gpio_put(led_gpio_num[i], v);
-    //printf("led %"PRIu32" now %d\n", i, v);
+    //debug("led %"PRIu32" now %d", i, v);
 }
 
 void ch_set(uint32_t i, bool v) {
     i %= NUM_CHANNELS;
     gpio_put(ch_gpio_num[i], v);
-    //printf("ch %"PRIu32" now %d\n", i, v);
+    //debug("ch %"PRIu32" now %d", i, v);
 }
