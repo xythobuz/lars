@@ -17,11 +17,14 @@
  */
 
 #include "hardware/i2c.h"
+#include "hardware/watchdog.h"
 
 #include "ssd1306.h"
 
 #include "buttons.h"
+#include "console.h"
 #include "main.h"
+#include "usb.h"
 #include "lcd.h"
 
 static i2c_inst_t *gpio_i2c_proto = i2c0;
@@ -45,8 +48,10 @@ void lcd_debug_buttons(void) {
     buttons_callback(lcd_debug_buttons_callback);
 
     while (1) {
+        watchdog_update();
         buttons_run();
-        handle_serial_input();
+        usb_run();
+        cnsl_run();
 
         if (changed) {
             changed = false;

@@ -40,6 +40,13 @@ target_sources(drumkit PUBLIC
     src/pulse.c
     src/sequence.c
     src/ui.c
+    src/log.c
+    src/ring.c
+    src/console.c
+    src/usb.c
+    src/usb_cdc.c
+    src/usb_descriptors.c
+    src/usb_midi.c
 
     pico-ssd1306/ssd1306.c
 )
@@ -73,6 +80,9 @@ target_link_libraries(drumkit
     hardware_adc
     hardware_gpio
     hardware_pwm
+    pico_unique_id
+    tinyusb_device
+    tinyusb_board
 )
 
 # enable usb output, disable uart output
@@ -83,3 +93,10 @@ pico_enable_stdio_uart(drumkit 0)
 target_compile_definitions(drumkit PUBLIC PICO_RP2040_USB_DEVICE_ENUMERATION_FIX=1)
 
 pico_add_extra_outputs(drumkit)
+
+# print binary size
+# https://github.com/raspberrypi/pico-sdk/issues/1196#issuecomment-1429404558
+add_custom_command(TARGET drumkit
+    POST_BUILD
+    COMMAND ${PICO_GCC_TRIPLE}-size --format=gnu ${CMAKE_CURRENT_BINARY_DIR}/drumkit.elf
+)

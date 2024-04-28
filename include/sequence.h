@@ -44,6 +44,7 @@ void sequence_init(void);
 void sequence_set_bpm(uint32_t new_bpm);
 uint32_t sequence_get_bpm(void);
 
+void sequence_set_ms(uint32_t new_ms);
 uint32_t sequence_get_ms(void);
 
 void sequence_set_beats(uint32_t new_beats);

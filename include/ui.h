@@ -21,18 +21,10 @@
 
 #include <stdint.h>
 
-enum ui_modes {
-    UI_MODE = 0,
-    UI_BPM,
-    UI_BANK,
-    UI_LENGTH,
-
-    UI_NUM_MODES
-};
-
 enum machine_modes {
     MODE_LOOPSTATION = 0,
     MODE_DRUMMACHINE,
+    MODE_MIDI,
 
     MACHINE_NUM_MODES
 };
@@ -40,6 +32,8 @@ enum machine_modes {
 void ui_init(void);
 void ui_encoder(int32_t val);
 void ui_run(void);
+
+void ui_midi_set(uint8_t channel, uint8_t note, uint8_t velocity);
 
 enum machine_modes ui_get_machinemode(void);
 

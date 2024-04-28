@@ -16,20 +16,22 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
 #include "pico/stdlib.h"
 #include "pico/bootrom.h"
 #include "hardware/watchdog.h"
 
 #include "adc.h"
 #include "buttons.h"
+#include "console.h"
 #include "encoder.h"
 #include "lcd.h"
 #include "led.h"
+#include "log.h"
 #include "logo.h"
 #include "pulse.h"
 #include "sequence.h"
 #include "ui.h"
+#include "usb.h"
 #include "main.h"
 
 #define WATCHDOG_PERIOD_MS 100
@@ -45,7 +47,7 @@ static void debug_buttons_callback(enum buttons btn, bool v) {
     debug_buttons[btn] = v;
 }
 
-static void reset_to_bootloader(void) {
+void reset_to_bootloader(void) {
     lcd_draw_bye();
 
 #ifdef PICO_DEFAULT_LED_PIN
@@ -55,17 +57,46 @@ static void reset_to_bootloader(void) {
 #endif // PICO_DEFAULT_LED_PIN
 }
 
-void handle_serial_input(void) {
-    int c = getchar_timeout_us(0);
-    if (c == 0x18) {
-        reset_to_bootloader();
-    } else if (c != PICO_ERROR_TIMEOUT) {
-        printf("%c", c);
+void reset_to_main(void) {
+    watchdog_enable(1, 0);
+    while (1);
+}
+
+static void encoder_handle(void) {
+    static int32_t last_epos = 0;
+    int32_t epos = encoder_pos();
+    if (epos != last_epos) {
+        ui_encoder(epos - last_epos);
+        last_epos = epos;
     }
 }
 
+static void sleep_ms_wd(uint32_t ms) {
+    for (uint32_t i = 0; i < ms; i++) {
+        watchdog_update();
+        sleep_ms(1);
+    }
+}
+
+void main_loop_hw(void) {
+    watchdog_update();
+
+    usb_run();
+    cnsl_run();
+    buttons_run();
+    encoder_run();
+    sequence_run();
+    pulse_run();
+    ui_run();
+
+    encoder_handle();
+}
+
 int main(void) {
-    stdio_init_all();
+    watchdog_enable(WATCHDOG_PERIOD_MS, 1);
+
+    cnsl_init();
+    usb_init();
 
     gpio_init(gpio_hw_detect);
     gpio_set_dir(gpio_hw_detect, GPIO_IN);
@@ -90,9 +121,11 @@ int main(void) {
     // read out button state for debug options
     buttons_callback(debug_buttons_callback);
     for (uint i = 0; i < (DEBOUNCE_DELAY_MS + 5); i++) {
+        watchdog_update();
         buttons_run();
-        handle_serial_input();
-        sleep_ms(1);
+        usb_run();
+        cnsl_run();
+        sleep_ms_wd(1);
     }
 
     // handle special button combos on boot
@@ -108,8 +141,10 @@ int main(void) {
         uint32_t last = to_ms_since_boot(get_absolute_time());
         bool state = false;
         while (debug_buttons[BTN_CLICK]) {
+            watchdog_update();
             buttons_run();
-            handle_serial_input();
+            usb_run();
+            cnsl_run();
             uint32_t now = to_ms_since_boot(get_absolute_time());
             if ((now - last) >= 250) {
                 state = !state;
@@ -120,9 +155,11 @@ int main(void) {
     } else {
         // show splash for a bit and animate LEDs
         for (uint i = 0; i < LED_COUNT; i++) {
-            handle_serial_input();
+            watchdog_update();
+            usb_run();
+            cnsl_run();
             led_set(i, true);
-            sleep_ms(LOGO_INIT_MS / LED_COUNT);
+            sleep_ms_wd(LOGO_INIT_MS / LED_COUNT);
         }
     }
 
@@ -134,26 +171,10 @@ int main(void) {
     sequence_init();
     ui_init();
 
-    printf("init done\n");
-    watchdog_enable(WATCHDOG_PERIOD_MS, 1);
-
-    int32_t last_epos = 0;
+    debug("init done\n");
 
     while (1) {
-        watchdog_update();
-        buttons_run();
-        encoder_run();
-        sequence_run();
-        pulse_run();
-        ui_run();
-
-        int32_t epos = encoder_pos();
-        if (epos != last_epos) {
-            ui_encoder(epos - last_epos);
-            last_epos = epos;
-        }
-
-        handle_serial_input();
+        main_loop_hw();
     }
 
     return 0;

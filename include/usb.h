@@ -1,7 +1,7 @@
 /*
- * main.h
+ * usb.h
  *
- * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2022 - 2023 Thomas Buck (thomas@xythobuz.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,20 +16,14 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#ifndef __USB_H__
+#define __USB_H__
 
-enum hw_versions {
-    HW_UNKNOWN = 0,
-    HW_PROTOTYPE,
-    HW_V2,
-};
+#include <stdbool.h>
 
-extern enum hw_versions hw_type;
+void usb_init(void);
+void usb_run(void);
 
-void main_loop_hw(void);
+bool usb_is_connected(void);
 
-void reset_to_bootloader(void);
-void reset_to_main(void);
-
-#endif // __MAIN_H__
+#endif // __USB_H__

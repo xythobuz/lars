@@ -1,7 +1,7 @@
 /*
- * main.h
+ * console.h
  *
- * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2022 - 2023 Thomas Buck (thomas@xythobuz.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,20 +16,11 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#ifndef __CONSOLE_H__
+#define __CONSOLE_H__
 
-enum hw_versions {
-    HW_UNKNOWN = 0,
-    HW_PROTOTYPE,
-    HW_V2,
-};
+void cnsl_init(void);
+void cnsl_run(void);
+void cnsl_handle_input(const void *buf, size_t len);
 
-extern enum hw_versions hw_type;
-
-void main_loop_hw(void);
-
-void reset_to_bootloader(void);
-void reset_to_main(void);
-
-#endif // __MAIN_H__
+#endif // __CONSOLE_H__

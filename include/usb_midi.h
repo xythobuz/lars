@@ -1,5 +1,5 @@
 /*
- * main.h
+ * usb_midi.h
  *
  * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
  *
@@ -16,20 +16,15 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#ifndef __USB_MIDI_H__
+#define __USB_MIDI_H__
 
-enum hw_versions {
-    HW_UNKNOWN = 0,
-    HW_PROTOTYPE,
-    HW_V2,
-};
+#include <stdint.h>
 
-extern enum hw_versions hw_type;
+#define MIDI_MAX_CH 16
 
-void main_loop_hw(void);
+void usb_midi_tx(uint8_t channel, uint8_t note, uint8_t velocity);
 
-void reset_to_bootloader(void);
-void reset_to_main(void);
+void usb_midi_run(void);
 
-#endif // __MAIN_H__
+#endif // __USB_MIDI_H__

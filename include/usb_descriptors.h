@@ -1,7 +1,7 @@
 /*
- * main.h
+ * usb_descriptors.h
  *
- * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2022 - 2023 Thomas Buck (thomas@xythobuz.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,20 +16,13 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#ifndef USB_DESCRIPTORS_H_
+#define USB_DESCRIPTORS_H_
 
-enum hw_versions {
-    HW_UNKNOWN = 0,
-    HW_PROTOTYPE,
-    HW_V2,
-};
+#include "pico/unique_id.h"
 
-extern enum hw_versions hw_type;
+extern char string_pico_serial[2 * PICO_UNIQUE_BOARD_ID_SIZE_BYTES + 1];
 
-void main_loop_hw(void);
+void usb_descriptor_init_id(void);
 
-void reset_to_bootloader(void);
-void reset_to_main(void);
-
-#endif // __MAIN_H__
+#endif /* USB_DESCRIPTORS_H_ */

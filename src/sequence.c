@@ -56,6 +56,10 @@ uint32_t sequence_get_bpm(void) {
     return 60000 / (ms_per_beat * beats);
 }
 
+void sequence_set_ms(uint32_t new_ms) {
+    ms_per_beat = new_ms;
+}
+
 uint32_t sequence_get_ms(void) {
     return ms_per_beat;
 }

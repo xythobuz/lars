@@ -18,7 +18,7 @@
 
 set -euo pipefail
 
-SERIAL=/dev/serial/by-id/usb-Raspberry_Pi_Pico_*
+SERIAL=/dev/serial/by-id/usb-xythobuz_LARS_*
 
 echo -n Waiting for serial port to appear
 until [ -e $SERIAL ]
