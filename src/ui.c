@@ -25,6 +25,7 @@
 #include "buttons.h"
 #include "lcd.h"
 #include "led.h"
+#include "pulse.h"
 #include "sequence.h"
 #include "usb.h"
 #include "usb_midi.h"
@@ -80,6 +81,8 @@ static uint32_t last_bat_fetch = 0;
 static float last_voltage = 0.0f;
 static float last_percentage = 0.0f;
 static uint8_t midi_rx = 0, midi_tx = 0;
+
+static const uint32_t channel_times[NUM_CHANNELS] = CH_GPIO_TIMINGS;
 
 enum machine_modes ui_get_machinemode(void) {
     return machine_mode;
@@ -236,9 +239,24 @@ static void ui_buttons_drummachine(enum buttons btn, bool val) {
 }
 
 static void ui_buttons_midi(enum buttons btn, bool val) {
-    // TODO
-    (void)btn;
-    (void)val;
+    switch (btn) {
+        case BTN_A:
+        case BTN_B:
+        case BTN_C:
+        case BTN_D:
+        case BTN_E:
+        case BTN_F:
+        case BTN_G:
+        case BTN_H: {
+            if (val) {
+                usb_midi_tx(midi_tx, btn - BTN_A, 0x7F);
+                pulse_trigger_led(btn - BTN_A, channel_times[0]);
+            }
+        }
+
+        default:
+            break;
+    }
 }
 
 static void ui_buttons(enum buttons btn, bool val) {
@@ -384,7 +402,7 @@ void ui_midi_set(uint8_t channel, uint8_t note, uint8_t velocity) {
 
     note = note % NUM_CHANNELS;
     if (velocity > 0) {
-        sequence_handle_button_loopstation(BTN_A + note, false);
+        pulse_trigger_out(note, channel_times[note]);
     }
 }
 
