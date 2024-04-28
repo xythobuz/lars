@@ -30,14 +30,12 @@
 #include "bsp/board.h"
 #include "tusb.h"
 
+#include "config.h"
 #include "console.h"
 #include "log.h"
 #include "main.h"
 #include "usb_descriptors.h"
 #include "usb_cdc.h"
-
-#define ENTER_BOOTLOADER_MAGIC 0x18
-#define DISABLE_CDC_DTR_CHECK
 
 static bool reroute_cdc_debug = false;
 

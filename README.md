@@ -86,7 +86,13 @@ A copy of the license can be found in `COPYING`.
 
 It uses the [Pi Pico SDK](https://github.com/raspberrypi/pico-sdk), licensed as BSD 3-clause, and therefore also [TinyUSB](https://github.com/hathach/tinyusb), licensed under the MIT license.
 
+Some code is adapted from the TinyUSB examples.
+
+To control the OLED display, [pico-ssd1306](https://github.com/daschr/pico-ssd1306) is used, licensed under the MIT license.
+
 The code in `src/encoder.c` is derived from [mathertel/RotaryEncoder](https://github.com/mathertel/RotaryEncoder) and therefore licensed as BSD 3-clause.
+
+Repo metadata is embedded into the project using [cmake-git-version-tracking](https://github.com/andrew-hardin/cmake-git-version-tracking), licensed under the MIT license.
 
 The docs are built using [mdbook](https://github.com/rust-lang/mdBook), licensed as `MPL-2.0`.
 

@@ -20,6 +20,7 @@
 #include "pico/bootrom.h"
 #include "hardware/watchdog.h"
 
+#include "config.h"
 #include "adc.h"
 #include "buttons.h"
 #include "console.h"
@@ -33,9 +34,6 @@
 #include "ui.h"
 #include "usb.h"
 #include "main.h"
-
-#define WATCHDOG_PERIOD_MS 100
-#define LOGO_INIT_MS 1000
 
 static const uint gpio_hw_detect = 21;
 

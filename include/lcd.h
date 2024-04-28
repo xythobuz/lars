@@ -24,6 +24,9 @@
 #define LCD_WIDTH 128
 #define LCD_HEIGHT 64
 
+#define FONT_HEIGHT 8
+#define FONT_WIDTH 5
+
 void lcd_init(void);
 void lcd_draw(const char *mode, const char *val, const char *bat);
 void lcd_draw_bye(void);

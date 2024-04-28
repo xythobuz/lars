@@ -16,11 +16,16 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
+#include <string.h>
+
 #include "hardware/i2c.h"
 #include "hardware/watchdog.h"
 
 #include "ssd1306.h"
+#include "git.h"
 
+#include "config.h"
 #include "buttons.h"
 #include "console.h"
 #include "main.h"
@@ -143,7 +148,44 @@ void lcd_draw_bye(void) {
 
 void lcd_draw_version(void) {
     ssd1306_clear(&disp);
-    // TODO
-    ssd1306_draw_string(&disp, 0, LCD_HEIGHT / 2 - 4, 1, "TODO");
+
+    ssd1306_draw_string(&disp, 0, 0, 2,
+                        "LARS");
+
+    ssd1306_draw_string(&disp, 0, FONT_HEIGHT * 2 + 1, 1,
+                        "Release: " VERSION_STR);
+
+    ssd1306_draw_string(&disp, 0, FONT_HEIGHT * 2 + 1 + FONT_HEIGHT + 1, 1,
+                        __DATE__ " " __TIME__);
+
+    if (git_IsPopulated()) {
+        const char *hash = git_CommitSHA1();
+        char short_hash[6 + 7 + 6 + 1] = {0};
+        memcpy(short_hash, "Hash: ", 6);
+        memcpy(short_hash + 6, hash, 7);
+        if (git_AnyUncommittedChanges()) {
+            memcpy(short_hash + 6 + 7, " dirty", 6);
+        }
+        ssd1306_draw_string(&disp, 0, FONT_HEIGHT * 2 + 1 + (FONT_HEIGHT + 1) * 2, 1,
+                            short_hash);
+    } else {
+        ssd1306_draw_string(&disp, 0, FONT_HEIGHT * 2 + 1 + (FONT_HEIGHT + 1) * 2, 1,
+                            "No Git Repo");
+    }
+
+    char hw_id_str[42] = {0};
+    if (hw_type == HW_PROTOTYPE) {
+        snprintf(hw_id_str, sizeof(hw_id_str) - 1,
+                 "HW Prototype");
+    } else if (hw_type == HW_V2) {
+        snprintf(hw_id_str, sizeof(hw_id_str) - 1,
+                 "HW V2");
+    } else {
+        snprintf(hw_id_str, sizeof(hw_id_str) - 1,
+                 "HW unknown %X", hw_type);
+    }
+    ssd1306_draw_string(&disp, 0, FONT_HEIGHT * 2 + 1 + (FONT_HEIGHT + 1) * 3, 1,
+                        hw_id_str);
+
     ssd1306_show(&disp);
 }

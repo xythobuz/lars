@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 
+#include "config.h"
 #include "main.h"
 #include "buttons.h"
 
