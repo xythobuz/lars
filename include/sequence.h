@@ -48,6 +48,9 @@ uint32_t sequence_get_beats(void);
 void sequence_set_bank(uint32_t new_bank);
 uint32_t sequence_get_bank(void);
 
+void sequence_set_channel(uint32_t new_channel);
+uint32_t sequence_get_channel(void);
+
 uint32_t sequence_get_max_banks(void);
 uint64_t sequence_get_us(void);
 

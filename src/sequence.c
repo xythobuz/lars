@@ -35,6 +35,7 @@ static uint32_t beats = MAX_BEATS;
 static uint32_t last_i = 0;
 static uint32_t bank = 0;
 static uint32_t max_banks_currently = 0;
+static uint32_t channel = 0;
 
 static enum channels sequence[MAX_BEATS] = {0};
 
@@ -85,6 +86,14 @@ void sequence_set_bank(uint32_t new_bank) {
 
 uint32_t sequence_get_bank(void) {
     return bank;
+}
+
+void sequence_set_channel(uint32_t new_channel) {
+    channel = (new_channel < NUM_CHANNELS) ? new_channel : 0;
+}
+
+uint32_t sequence_get_channel(void) {
+    return channel;
 }
 
 uint64_t sequence_get_us(void) {
@@ -167,27 +176,18 @@ void sequence_handle_button_loopstation(enum buttons btn, bool rec) {
 }
 
 void sequence_handle_button_drummachine(enum buttons btn) {
-    uint32_t beat = 42; // TODO!!
-
     switch (btn) {
-        case BTN_A: {
-            // TODO kick is wrong here
-            bool val = !sequence_get(beat, CH_KICK);
-            sequence_set(beat, CH_KICK, val);
-            break;
-        }
-
-        case BTN_B: {
-            // TODO snare is wrong here
-            bool val = !sequence_get(beat, CH_SNARE);
-            sequence_set(beat, CH_SNARE, val);
-            break;
-        }
-
-        case BTN_C: {
-            // TODO hihat is wrong here
-            bool val = !sequence_get(beat, CH_HIHAT);
-            sequence_set(beat, CH_HIHAT, val);
+        case BTN_A:
+        case BTN_B:
+        case BTN_C:
+        case BTN_D:
+        case BTN_E:
+        case BTN_F:
+        case BTN_G:
+        case BTN_H: {
+            uint32_t beat = (btn - BTN_A) + bank * LED_COUNT;
+            bool val = !sequence_get(beat, 1 << channel);
+            sequence_set(beat, 1 << channel, val);
             break;
         }
 

@@ -168,7 +168,7 @@ static void ui_redraw(void) {
 
         case SETTING_CHANNEL: {
             snprintf(mode, sizeof(mode) - 1, "Channel:");
-            snprintf(val, sizeof(val) - 1, "todo");
+            snprintf(val, sizeof(val) - 1, "%"PRIu32, sequence_get_channel() + 1);
             break;
         }
 
@@ -347,6 +347,8 @@ void ui_encoder(int32_t val) {
                 } else if (machine_mode == MODE_DRUMMACHINE) {
                     sequence_set_beats(LED_COUNT);
                     sequence_set_bpm(120);
+                    sequence_set_bank(0);
+                    sequence_set_channel(0);
                 }
             }
             break;
@@ -389,7 +391,9 @@ void ui_encoder(int32_t val) {
         }
 
         case SETTING_CHANNEL: {
-            // TODO
+            int32_t tmp = sequence_get_channel() + val;
+            KEEP_IN_RANGE(tmp, 0, NUM_CHANNELS);
+            sequence_set_channel(tmp);
             break;
         }
 
