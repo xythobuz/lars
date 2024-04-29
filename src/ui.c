@@ -322,7 +322,8 @@ void ui_encoder(int32_t val) {
 
             // midi only when connected to pc
             if ((tmp == MODE_MIDI) && !usb_is_connected()) {
-                tmp = (tmp + 1) % MACHINE_NUM_MODES;
+                tmp = tmp + val;
+                KEEP_IN_RANGE(tmp, 0, MACHINE_NUM_MODES);
             }
 
             enum machine_modes prev_mode = machine_mode;

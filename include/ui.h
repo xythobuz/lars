@@ -22,7 +22,7 @@
 #include <stdint.h>
 
 #define KEEP_IN_RANGE(val, min, len) { \
-    while (val > (len - min)) {        \
+    while ((val - min) >= len) {       \
         val -= len;                    \
     }                                  \
     while (val < min) {                \
