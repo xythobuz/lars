@@ -29,6 +29,7 @@
 #include "lcd.h"
 #include "log.h"
 #include "mem.h"
+#include "pulse.h"
 #include "sequence.h"
 #include "ui.h"
 #include "usb.h"
@@ -61,6 +62,36 @@ static void settings_buttons(enum buttons btn, bool val) {
             if (val) {
                 setting = (setting + 1) % (NUM_CHANNELS + 2);
                 settings_redraw();
+            }
+            break;
+        }
+
+        case BTN_A:
+        case BTN_E: {
+            if (val) {
+                pulse_trigger_out(0, mem_data()->ch_timings[0]);
+                pulse_trigger_led(0, mem_data()->ch_timings[0]);
+                pulse_trigger_led(4, mem_data()->ch_timings[0]);
+            }
+            break;
+        }
+
+        case BTN_B:
+        case BTN_F: {
+            if (val) {
+                pulse_trigger_out(1, mem_data()->ch_timings[1]);
+                pulse_trigger_led(1, mem_data()->ch_timings[1]);
+                pulse_trigger_led(5, mem_data()->ch_timings[1]);
+            }
+            break;
+        }
+
+        case BTN_C:
+        case BTN_G: {
+            if (val) {
+                pulse_trigger_out(2, mem_data()->ch_timings[2]);
+                pulse_trigger_led(2, mem_data()->ch_timings[2]);
+                pulse_trigger_led(6, mem_data()->ch_timings[2]);
             }
             break;
         }
@@ -104,6 +135,7 @@ void settings_run(void) {
         watchdog_update();
         buttons_run();
         encoder_run();
+        pulse_run();
         usb_run();
         cnsl_run();
 
