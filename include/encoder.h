@@ -26,5 +26,6 @@ void encoder_run(void);
 
 int32_t encoder_pos(void);
 int32_t encoder_get_diff(void);
+uint32_t encoder_get_rpm(void);
 
 #endif // __ENCODER_H__

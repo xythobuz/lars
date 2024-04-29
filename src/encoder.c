@@ -14,6 +14,7 @@
 #include "pico/stdlib.h"
 
 #include "main.h"
+#include "log.h"
 #include "encoder.h"
 
 #define LATCH0 0
@@ -44,6 +45,8 @@ static int8_t oldState;
 static int32_t position;
 static int32_t positionExt;
 static int32_t positionExtPrev;
+static uint32_t positionExtTime;
+static uint32_t positionExtTimePrev;
 
 void encoder_init(void) {
     for (uint i = 0; i < 2; i++) {
@@ -67,18 +70,39 @@ void encoder_init(void) {
     position = 0;
     positionExt = 0;
     positionExtPrev = 0;
+    positionExtTime = 0;
+    positionExtTimePrev = 0;
 }
 
 int32_t encoder_pos(void) {
     return positionExt;
 }
 
+// TODO should be adaptive depending on value range to be changed
+#define ENCODER_RPM_VALUE_FACTOR 100.0f
+
 int32_t encoder_get_diff(void) {
-    static int32_t last_epos = 0;
-    int32_t epos = encoder_pos();
-    int32_t diff = epos - last_epos;
-    last_epos = epos;
+    int32_t diff = positionExt - positionExtPrev;
+    positionExtPrev = positionExt;
+
+#ifdef ENCODER_RPM_VALUE_FACTOR
+    if (diff != 0) {
+        uint32_t rpm = encoder_get_rpm();
+        float f = 1.0f + ((float)rpm / ENCODER_RPM_VALUE_FACTOR);
+        //debug("diff=%"PRIi32" rpm=%"PRIu32" result=%.1f", diff, rpm, diff * f);
+        return diff * f;
+    }
+#endif
+
     return diff;
+}
+
+uint32_t encoder_get_rpm(void) {
+    // calculate max of difference in time between last position changes or last change and now.
+    uint32_t timeBetweenLastPositions = positionExtTime - positionExtTimePrev;
+    uint32_t timeToLastPosition = to_ms_since_boot(get_absolute_time()) - positionExtTime;
+    uint32_t t = MAX(timeBetweenLastPositions, timeToLastPosition);
+    return (60.0f * 1000.0f) / ((float)(t * 20));
 }
 
 void encoder_run(void) {
@@ -99,6 +123,9 @@ void encoder_run(void) {
                 // The hardware has 4 steps with a latch on the input state 3
                 positionExt = position >> 2;
                 positionExt = -positionExt;
+
+                positionExtTimePrev = positionExtTime;
+                positionExtTime = to_ms_since_boot(get_absolute_time());
             }
             break;
 
@@ -107,6 +134,9 @@ void encoder_run(void) {
                 // The hardware has 4 steps with a latch on the input state 0
                 positionExt = position >> 2;
                 positionExt = -positionExt;
+
+                positionExtTimePrev = positionExtTime;
+                positionExtTime = to_ms_since_boot(get_absolute_time());
             }
             break;
 
@@ -115,6 +145,9 @@ void encoder_run(void) {
                 // The hardware has 2 steps with a latch on the input state 0 and 3
                 positionExt = position >> 1;
                 positionExt = -positionExt;
+
+                positionExtTimePrev = positionExtTime;
+                positionExtTime = to_ms_since_boot(get_absolute_time());
             }
             break;
         }
