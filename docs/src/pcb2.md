@@ -8,6 +8,8 @@ It is planned to be used without a case.
 
 You can [download the Gerber files to order PCBs online](./plot/fab_pcb2.zip).
 
+[![assembled V2 PCB](https://www.xythobuz.de/img/lars_v2_1_small.jpg)](https://www.xythobuz.de/img/lars_v2_1.jpg)
+
 **Warning:**
 Revision 1 is missing diodes on the button matrix.
 So when holding down three or more buttons simultaneously you get ghosting on other buttons.
