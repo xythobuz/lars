@@ -129,6 +129,7 @@ static void animate_boot_combos(void) {
             uint32_t now = to_ms_since_boot(get_absolute_time());
             if ((now - last) >= 250) {
                 state = !state;
+                last = now;
                 led_set(0, state);
             }
         }

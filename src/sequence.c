@@ -41,7 +41,7 @@ static enum channels sequence[MAX_BEATS] = {0};
 void sequence_init(void) {
     us_per_beat = 0;
     beats = MAX_BEATS;
-    last_t = to_ms_since_boot(get_absolute_time());
+    last_t = to_us_since_boot(get_absolute_time());
     last_i = 0;
     max_banks_currently = (beats + (NUM_BTNS - 1)) / NUM_BTNS;
 
@@ -235,7 +235,7 @@ void sequence_run(void) {
             }
         }
 
-        last_t = now;
+        last_t += us;
         last_i = i;
     }
 }
