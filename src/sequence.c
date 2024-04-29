@@ -22,11 +22,10 @@
 
 #include "led.h"
 #include "log.h"
+#include "mem.h"
 #include "pulse.h"
 #include "ui.h"
 #include "sequence.h"
-
-static const uint32_t channel_times[NUM_CHANNELS] = CH_GPIO_TIMINGS;
 
 static uint64_t us_per_beat = 0;
 static uint64_t last_t = 0;
@@ -113,25 +112,25 @@ void sequence_handle_button_loopstation(enum buttons btn, bool rec) {
     switch (btn) {
         case BTN_A:
         case BTN_E: {
-            pulse_trigger_out(0, channel_times[0]);
-            pulse_trigger_led(0, channel_times[0]);
-            pulse_trigger_led(4, channel_times[0]);
+            pulse_trigger_out(0, mem_data()->ch_timings[0]);
+            pulse_trigger_led(0, mem_data()->ch_timings[0]);
+            pulse_trigger_led(4, mem_data()->ch_timings[0]);
             break;
         }
 
         case BTN_B:
         case BTN_F: {
-            pulse_trigger_out(1, channel_times[1]);
-            pulse_trigger_led(1, channel_times[1]);
-            pulse_trigger_led(5, channel_times[1]);
+            pulse_trigger_out(1, mem_data()->ch_timings[1]);
+            pulse_trigger_led(1, mem_data()->ch_timings[1]);
+            pulse_trigger_led(5, mem_data()->ch_timings[1]);
             break;
         }
 
         case BTN_C:
         case BTN_G: {
-            pulse_trigger_out(2, channel_times[2]);
-            pulse_trigger_led(2, channel_times[2]);
-            pulse_trigger_led(6, channel_times[2]);
+            pulse_trigger_out(2, mem_data()->ch_timings[2]);
+            pulse_trigger_led(2, mem_data()->ch_timings[2]);
+            pulse_trigger_led(6, mem_data()->ch_timings[2]);
             break;
         }
 
@@ -228,10 +227,10 @@ void sequence_run(void) {
 
         for (uint ch = 0; ch < NUM_CHANNELS; ch++) {
             if (sequence[i] & (1 << ch)) {
-                pulse_trigger_out(ch, channel_times[ch]);
+                pulse_trigger_out(ch, mem_data()->ch_timings[ch]);
                 if (ui_get_machinemode() == MODE_LOOPSTATION) {
-                    pulse_trigger_led(ch, channel_times[ch]);
-                    pulse_trigger_led(ch + 4, channel_times[ch]);
+                    pulse_trigger_led(ch, mem_data()->ch_timings[ch]);
+                    pulse_trigger_led(ch + 4, mem_data()->ch_timings[ch]);
                 }
             }
         }

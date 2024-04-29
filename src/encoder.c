@@ -69,9 +69,16 @@ void encoder_init(void) {
     positionExtPrev = 0;
 }
 
-int32_t encoder_pos(void)
-{
+int32_t encoder_pos(void) {
     return positionExt;
+}
+
+int32_t encoder_get_diff(void) {
+    static int32_t last_epos = 0;
+    int32_t epos = encoder_pos();
+    int32_t diff = epos - last_epos;
+    last_epos = epos;
+    return diff;
 }
 
 void encoder_run(void) {

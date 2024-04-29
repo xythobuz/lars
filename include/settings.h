@@ -1,5 +1,5 @@
 /*
- * encoder.h
+ * settings.h
  *
  * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
  *
@@ -16,15 +16,10 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __ENCODER_H__
-#define __ENCODER_H__
+#ifndef __SETTINGS_H__
+#define __SETTINGS_H__
 
-#include <stdint.h>
+void settings_init(void);
+void settings_run(void);
 
-void encoder_init(void);
-void encoder_run(void);
-
-int32_t encoder_pos(void);
-int32_t encoder_get_diff(void);
-
-#endif // __ENCODER_H__
+#endif // __SETTINGS_H__

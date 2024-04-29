@@ -29,8 +29,10 @@
 #include "led.h"
 #include "log.h"
 #include "logo.h"
+#include "mem.h"
 #include "pulse.h"
 #include "sequence.h"
+#include "settings.h"
 #include "ui.h"
 #include "usb.h"
 #include "main.h"
@@ -43,6 +45,16 @@ static bool debug_buttons[NUM_BTNS] = {0};
 
 static void debug_buttons_callback(enum buttons btn, bool v) {
     debug_buttons[btn] = v;
+}
+
+static uint32_t debug_count_buttons(void) {
+    uint32_t cnt = 0;
+    for (uint32_t i = 0; i < NUM_BTNS; i++) {
+        if (debug_buttons[i]) {
+            cnt++;
+        }
+    }
+    return cnt;
 }
 
 void reset_to_bootloader(void) {
@@ -60,15 +72,6 @@ void reset_to_main(void) {
     while (1);
 }
 
-static void encoder_handle(void) {
-    static int32_t last_epos = 0;
-    int32_t epos = encoder_pos();
-    if (epos != last_epos) {
-        ui_encoder(epos - last_epos);
-        last_epos = epos;
-    }
-}
-
 static void sleep_ms_wd(uint32_t ms) {
     for (uint32_t i = 0; i < ms; i++) {
         watchdog_update();
@@ -76,46 +79,19 @@ static void sleep_ms_wd(uint32_t ms) {
     }
 }
 
-void main_loop_hw(void) {
-    watchdog_update();
-
-    usb_run();
-    cnsl_run();
-    buttons_run();
-    encoder_run();
-    sequence_run();
-    pulse_run();
-    ui_run();
-
-    encoder_handle();
-}
-
-int main(void) {
-    watchdog_enable(WATCHDOG_PERIOD_MS, 1);
-
-    cnsl_init();
-    usb_init();
-
+static void hw_type_detection(void) {
     gpio_init(gpio_hw_detect);
     gpio_set_dir(gpio_hw_detect, GPIO_IN);
     gpio_pull_up(gpio_hw_detect);
+
     if (gpio_get(gpio_hw_detect)) {
         hw_type = HW_PROTOTYPE;
     } else {
         hw_type = HW_V2;
     }
+}
 
-    bat_init();
-    buttons_init();
-    encoder_init();
-    lcd_init();
-    led_init();
-
-    // show logo
-    lcd_draw_bitmap(logo_data,
-                    LOGO_WIDTH, LOGO_HEIGHT,
-                    0, 0);
-
+static void animate_boot_combos(void) {
     // read out button state for debug options
     buttons_callback(debug_buttons_callback);
     for (uint i = 0; i < (DEBOUNCE_DELAY_MS + 5); i++) {
@@ -126,12 +102,19 @@ int main(void) {
         sleep_ms_wd(1);
     }
 
+    uint32_t cnt = debug_count_buttons();
+
     // handle special button combos on boot
-    if (debug_buttons[BTN_REC] && debug_buttons[BTN_CLICK]) {
+    if ((cnt == 2) && debug_buttons[BTN_REC] && debug_buttons[BTN_CLICK]) {
         lcd_debug_buttons();
-    } else if (debug_buttons[BTN_REC] && (!debug_buttons[BTN_CLICK])) {
+    } else if ((cnt == 1) && debug_buttons[BTN_REC]) {
+        // enter settings menu
+        settings_init();
+        settings_run();
+        sleep_ms_wd(mem_data()->boot_anim_ms);
+    } else if (cnt == 3) {
         // skip splash screen
-    } else if ((!debug_buttons[BTN_REC]) && debug_buttons[BTN_CLICK]) {
+    } else if ((cnt == 1) && debug_buttons[BTN_CLICK]) {
         // show version info
         lcd_draw_version();
 
@@ -157,7 +140,7 @@ int main(void) {
             usb_run();
             cnsl_run();
             led_set(i, true);
-            sleep_ms_wd(LOGO_INIT_MS / LED_COUNT);
+            sleep_ms_wd(mem_data()->boot_anim_ms / LED_COUNT);
         }
     }
 
@@ -165,6 +148,43 @@ int main(void) {
     for (uint i = 0; i < LED_COUNT; i++) {
         led_set(i, false);
     }
+}
+
+void main_loop_hw(void) {
+    watchdog_update();
+
+    usb_run();
+    cnsl_run();
+    buttons_run();
+    encoder_run();
+    sequence_run();
+    pulse_run();
+    ui_run();
+
+    ui_encoder(encoder_get_diff());
+}
+
+int main(void) {
+    watchdog_enable(WATCHDOG_PERIOD_MS, 1);
+
+    cnsl_init();
+    usb_init();
+    mem_load();
+
+    hw_type_detection();
+
+    bat_init();
+    buttons_init();
+    encoder_init();
+    lcd_init();
+    led_init();
+
+    // show logo
+    lcd_draw_bitmap(logo_data,
+                    LOGO_WIDTH, LOGO_HEIGHT,
+                    0, 0);
+
+    animate_boot_combos();
 
     sequence_init();
     ui_init();

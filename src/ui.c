@@ -27,20 +27,12 @@
 #include "lcd.h"
 #include "led.h"
 #include "log.h"
+#include "mem.h"
 #include "pulse.h"
 #include "sequence.h"
 #include "usb.h"
 #include "usb_midi.h"
 #include "ui.h"
-
-#define KEEP_IN_RANGE(val, min, len) { \
-    while (val > (len - min)) {        \
-        val -= len;                    \
-    }                                  \
-    while (val < min) {                \
-        val += len;                    \
-    }                                  \
-}
 
 enum ui_settings {
     SETTING_MODE = 0,
@@ -94,8 +86,6 @@ static uint32_t last_bat_fetch = 0;
 static float last_voltage = 0.0f;
 static float last_percentage = 0.0f;
 static uint8_t midi_rx = 0, midi_tx = 0;
-
-static const uint32_t channel_times[NUM_CHANNELS] = CH_GPIO_TIMINGS;
 
 enum machine_modes ui_get_machinemode(void) {
     return machine_mode;
@@ -268,7 +258,7 @@ static void ui_buttons_midi(enum buttons btn, bool val) {
         case BTN_H: {
             if (val) {
                 usb_midi_tx(midi_tx, btn - BTN_A, 0x7F);
-                pulse_trigger_led(btn - BTN_A, channel_times[0]);
+                pulse_trigger_led(btn - BTN_A, mem_data()->ch_timings[0]);
             }
         }
 
@@ -424,7 +414,7 @@ void ui_midi_set(uint8_t channel, uint8_t note, uint8_t velocity) {
 
     note = note % NUM_CHANNELS;
     if (velocity > 0) {
-        pulse_trigger_out(note, channel_times[note]);
+        pulse_trigger_out(note, mem_data()->ch_timings[note]);
     }
 }
 

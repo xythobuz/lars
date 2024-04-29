@@ -34,8 +34,6 @@ enum channels {
     NUM_CHANNELS = 3
 };
 
-#define CH_GPIO_TIMINGS { 42, 42, 42 } // in milliseconds
-
 #define MAX_BEATS 128
 #define MAX_BANKS (MAX_BEATS / NUM_BTNS)
 

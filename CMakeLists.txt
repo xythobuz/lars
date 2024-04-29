@@ -47,6 +47,8 @@ target_sources(drumkit PUBLIC
     src/usb_cdc.c
     src/usb_descriptors.c
     src/usb_midi.c
+    src/settings.c
+    src/mem.c
 
     pico-ssd1306/ssd1306.c
 )
@@ -95,11 +97,12 @@ target_link_libraries(drumkit
     tinyusb_device
     tinyusb_board
     cmake_git_version_tracking
+    hardware_flash
+    pico_flash
+    hardware_exception
 )
 
-# enable usb output, disable uart output
-pico_enable_stdio_usb(drumkit 1)
-pico_enable_stdio_uart(drumkit 0)
+pico_set_linker_script(drumkit ${CMAKE_CURRENT_LIST_DIR}/src/memmap_custom.ld)
 
 # fix for Errata RP2040-E5 (the fix requires use of GPIO 15)
 target_compile_definitions(drumkit PUBLIC PICO_RP2040_USB_DEVICE_ENUMERATION_FIX=1)

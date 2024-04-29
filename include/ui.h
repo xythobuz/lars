@@ -21,6 +21,15 @@
 
 #include <stdint.h>
 
+#define KEEP_IN_RANGE(val, min, len) { \
+    while (val > (len - min)) {        \
+        val -= len;                    \
+    }                                  \
+    while (val < min) {                \
+        val += len;                    \
+    }                                  \
+}
+
 enum machine_modes {
     MODE_LOOPSTATION = 0,
     MODE_DRUMMACHINE,
