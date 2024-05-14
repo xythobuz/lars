@@ -10,8 +10,11 @@ You can [download the Gerber files to order PCBs online](./plot/fab_pcb2.zip).
 
 [![assembled V2 PCB](https://www.xythobuz.de/img/lars_v2_1_small.jpg)](https://www.xythobuz.de/img/lars_v2_1.jpg)
 
+Revision 1 was using the SMD-only footprint for the Raspberry Pi Pico.
+Revision 2 has changed this to be compatible to THT as well.
+
 **Warning:**
-Revision 1 is missing diodes on the button matrix.
+Revision 1 and 2 are missing diodes on the button matrix.
 So when holding down three or more buttons simultaneously you get ghosting on other buttons.
 
 ## Bill of Materials
