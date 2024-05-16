@@ -13,6 +13,11 @@ pcb2/plot
 pcb2/fabrication
 pcb2/fab.zip
 
+pcb3/lars3-backups
+pcb3/plot
+pcb3/fabrication
+pcb3/fab.zip
+
 docs/book
 docs/src/plot
 docs/src/stl
