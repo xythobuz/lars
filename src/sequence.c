@@ -36,6 +36,7 @@ static uint32_t last_i = 0;
 static uint32_t bank = 0;
 static uint32_t max_banks_currently = 0;
 static uint32_t channel = 0;
+static bool button_held[NUM_BTNS] = {0};
 
 static enum channels sequence[MAX_BEATS] = {0};
 
@@ -117,9 +118,17 @@ static bool sequence_get(uint32_t beat, enum channels ch) {
     return false;
 }
 
-void sequence_handle_button_loopstation(enum buttons btn, bool rec) {
+void sequence_handle_button_loopstation(enum buttons btn, bool val) {
+    button_held[btn] = val;
+
     switch (btn) {
         case BTN_A: {
+            // only react to button down events
+            if (!val) {
+                break;
+            }
+
+            // trigger outputs and LEDs
             pulse_trigger_out(0, mem_data()->ch_timings[0]);
             pulse_trigger_led(0, mem_data()->ch_timings[0]);
             pulse_trigger_led(4, mem_data()->ch_timings[0]);
@@ -127,6 +136,12 @@ void sequence_handle_button_loopstation(enum buttons btn, bool rec) {
         }
 
         case BTN_B: {
+            // only react to button down events
+            if (!val) {
+                break;
+            }
+
+            // trigger outputs and LEDs
             pulse_trigger_out(1, mem_data()->ch_timings[1]);
             pulse_trigger_led(1, mem_data()->ch_timings[1]);
             pulse_trigger_led(5, mem_data()->ch_timings[1]);
@@ -134,25 +149,50 @@ void sequence_handle_button_loopstation(enum buttons btn, bool rec) {
         }
 
         case BTN_C: {
+            // only react to button down events
+            if (!val) {
+                break;
+            }
+
+            // trigger outputs and LEDs
             pulse_trigger_out(2, mem_data()->ch_timings[2]);
             pulse_trigger_led(2, mem_data()->ch_timings[2]);
             pulse_trigger_led(6, mem_data()->ch_timings[2]);
             break;
         }
 
-        case BTN_E: {
-            // TODO mute/unmute according to rec param
-            return; // not recording sequence!
+        case BTN_D:
+        case BTN_H: {
+            sequence_looptime(!val);
+            if (!val) {
+                ui_redraw();
+            }
+            break;
         }
 
-        case BTN_F: {
-            // TODO mute/unmute according to rec param
-            return; // not recording sequence!
-        }
+        case BTN_CLEAR: {
+            // only react to button down events
+            if (!val) {
+                break;
+            }
 
-        case BTN_G: {
-            // TODO mute/unmute according to rec param
-            return; // not recording sequence!
+            if (button_held[BTN_H]) {
+                // right REC: clear all loops in all banks
+                // TODO other banks
+                sequence_init();
+            } else if (button_held[BTN_D]) {
+                // left REC: clear the current loop, including the length
+                sequence_init();
+            } else if (button_held[BTN_E] || button_held[BTN_F] || button_held[BTN_G]) {
+                // channel mute buttons: clear only this channel in the current loop
+                // TODO
+            } else {
+                // on its own: clear all channels of the current loop, keeping the set length
+                // TODO
+            }
+
+            ui_redraw();
+            break;
         }
 
         default: {
@@ -160,22 +200,20 @@ void sequence_handle_button_loopstation(enum buttons btn, bool rec) {
         }
     }
 
-    if (rec) {
+    // set marker in sequence when one of the REC buttons was held
+    if ((button_held[BTN_D] || button_held[BTN_H]) && val) {
         switch (btn) {
-            case BTN_A:
-            case BTN_E: {
+            case BTN_A: {
                 sequence_set(last_i, CH_KICK, true);
                 break;
             }
 
-            case BTN_B:
-            case BTN_F: {
+            case BTN_B: {
                 sequence_set(last_i, CH_SNARE, true);
                 break;
             }
 
-            case BTN_C:
-            case BTN_G: {
+            case BTN_C: {
                 sequence_set(last_i, CH_HIHAT, true);
                 break;
             }
@@ -238,8 +276,16 @@ void sequence_run(void) {
         }
 
         for (uint ch = 0; ch < NUM_CHANNELS; ch++) {
+            // skip muted channels
+            if ((ui_get_machinemode() == MODE_LOOPSTATION) && button_held[BTN_E + ch]) {
+                continue;
+            }
+
             if (sequence[i] & (1 << ch)) {
+                // trigger channel solenoid
                 pulse_trigger_out(ch, mem_data()->ch_timings[ch]);
+
+                // flash LEDs in loopstation mode
                 if (ui_get_machinemode() == MODE_LOOPSTATION) {
                     pulse_trigger_led(ch, mem_data()->ch_timings[ch]);
                     pulse_trigger_led(ch + 4, mem_data()->ch_timings[ch]);

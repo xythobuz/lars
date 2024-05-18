@@ -36,7 +36,7 @@ static const uint gpio_num_proto[NUM_BTNS] = {
     0xFF, // BTN_G
     0xFF, // BTN_H
 
-    14, // BTN_REC
+    14, // BTN_CLEAR
     16, // BTN_CLICK
 };
 
@@ -53,7 +53,7 @@ static const uint gpio_num_v2[NUM_BTNS] = {
     0xFF, // BTN_F
     0xFF, // BTN_G
     0xFF, // BTN_H
-    0xFF, // BTN_REC
+    0xFF, // BTN_CLEAR
 
     20, // BTN_CLICK
 };

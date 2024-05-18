@@ -33,7 +33,7 @@ enum buttons {
     BTN_G,
     BTN_H,
 
-    BTN_REC,
+    BTN_CLEAR,
     BTN_CLICK,
     NUM_BTNS // count
 };

@@ -79,7 +79,6 @@ static bool allowed_settings[MACHINE_NUM_MODES][SETTING_NUM_MODES] = {
     },
 };
 
-static bool rec_held_down = false;
 static enum ui_settings ui_setting = 0;
 static enum machine_modes machine_mode = 0;
 static uint32_t last_bat_fetch = 0;
@@ -91,7 +90,7 @@ enum machine_modes ui_get_machinemode(void) {
     return machine_mode;
 }
 
-static void ui_redraw(void) {
+void ui_redraw(void) {
     char mode[64] = {0};
     char val[64] = {0};
     char bat[64] = {0};
@@ -184,93 +183,6 @@ static void ui_redraw(void) {
     lcd_draw(mode, val, bat);
 }
 
-static void ui_buttons_loopstation(enum buttons btn, bool val) {
-    switch (btn) {
-        case BTN_A:
-        case BTN_B:
-        case BTN_C: {
-            if (val) {
-                sequence_handle_button_loopstation(btn, rec_held_down);
-            }
-            break;
-        }
-
-        case BTN_E:
-        case BTN_F:
-        case BTN_G: {
-            sequence_handle_button_loopstation(btn, val);
-            break;
-        }
-
-        case BTN_REC: {
-            // reset sequence
-            sequence_init();
-            ui_redraw();
-            break;
-        }
-
-        case BTN_D:
-        case BTN_H: {
-            rec_held_down = val;
-            sequence_looptime(!val);
-            if (!val) {
-                ui_redraw();
-            }
-            break;
-        }
-
-        default: {
-            debug("invalid btn: %d", btn);
-            break;
-        }
-    }
-}
-
-static void ui_buttons_drummachine(enum buttons btn, bool val) {
-    switch (btn) {
-        case BTN_A:
-        case BTN_B:
-        case BTN_C:
-        case BTN_D:
-        case BTN_E:
-        case BTN_F:
-        case BTN_G:
-        case BTN_H:
-        case BTN_REC: {
-            if (val) {
-                sequence_handle_button_drummachine(btn);
-            }
-            break;
-        }
-
-        default: {
-            debug("invalid btn: %d", btn);
-            break;
-        }
-    }
-}
-
-static void ui_buttons_midi(enum buttons btn, bool val) {
-    switch (btn) {
-        case BTN_A:
-        case BTN_B:
-        case BTN_C:
-        case BTN_D:
-        case BTN_E:
-        case BTN_F:
-        case BTN_G:
-        case BTN_H: {
-            if (val) {
-                usb_midi_tx(midi_tx, btn - BTN_A, 0x7F);
-                pulse_trigger_led(btn - BTN_A, mem_data()->ch_timings[0]);
-            }
-        }
-
-        default:
-            break;
-    }
-}
-
 static void ui_buttons(enum buttons btn, bool val) {
     switch (btn) {
         case BTN_CLICK: {
@@ -288,17 +200,22 @@ static void ui_buttons(enum buttons btn, bool val) {
         default: {
             switch (machine_mode) {
                 case MODE_LOOPSTATION: {
-                    ui_buttons_loopstation(btn, val);
+                    sequence_handle_button_loopstation(btn, val);
                     break;
                 }
 
                 case MODE_DRUMMACHINE: {
-                    ui_buttons_drummachine(btn, val);
+                    if (val) {
+                        sequence_handle_button_drummachine(btn);
+                    }
                     break;
                 }
 
                 case MODE_MIDI: {
-                    ui_buttons_midi(btn, val);
+                    if (val) {
+                        usb_midi_tx(midi_tx, btn - BTN_A, 0x7F);
+                        pulse_trigger_led(btn - BTN_A, mem_data()->ch_timings[0]);
+                    }
                     break;
                 }
 

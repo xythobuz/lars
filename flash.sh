@@ -26,7 +26,6 @@ if [ ! -e $DISK ]
 then
     echo Resetting Raspberry Pi Pico
     echo -n -e "\\x18" > $SERIAL
-    echo -n -e "\\x18" > $SERIAL
 fi
 
 echo -n Waiting for disk to appear

@@ -13,7 +13,7 @@ Take a look at the sub-page for each mode for details.
 
 You can hold down some buttons while powering on the device to get different effects:
 
-* hold the `REC` button to enter the configuration menu
+* hold the `Clear` button to enter the configuration menu
 * hold the encoder `Click` button to show version information of the firmware
-* hold both `REC` and `Click` to enter the button test mode
+* hold both `Clear` and `Click` to enter the button test mode
 * hold any combination of three buttons to skip the boot animation

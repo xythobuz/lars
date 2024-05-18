@@ -105,9 +105,9 @@ static void animate_boot_combos(void) {
     uint32_t cnt = debug_count_buttons();
 
     // handle special button combos on boot
-    if ((cnt == 2) && debug_buttons[BTN_REC] && debug_buttons[BTN_CLICK]) {
+    if ((cnt == 2) && debug_buttons[BTN_CLEAR] && debug_buttons[BTN_CLICK]) {
         lcd_debug_buttons();
-    } else if ((cnt == 1) && debug_buttons[BTN_REC]) {
+    } else if ((cnt == 1) && debug_buttons[BTN_CLEAR]) {
         // enter settings menu
         settings_init();
         settings_run();

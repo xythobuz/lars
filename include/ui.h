@@ -46,4 +46,6 @@ void ui_midi_set(uint8_t channel, uint8_t note, uint8_t velocity);
 
 enum machine_modes ui_get_machinemode(void);
 
+void ui_redraw(void);
+
 #endif // __UI_H__
