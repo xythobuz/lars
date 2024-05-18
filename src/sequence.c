@@ -119,28 +119,40 @@ static bool sequence_get(uint32_t beat, enum channels ch) {
 
 void sequence_handle_button_loopstation(enum buttons btn, bool rec) {
     switch (btn) {
-        case BTN_A:
-        case BTN_E: {
+        case BTN_A: {
             pulse_trigger_out(0, mem_data()->ch_timings[0]);
             pulse_trigger_led(0, mem_data()->ch_timings[0]);
             pulse_trigger_led(4, mem_data()->ch_timings[0]);
             break;
         }
 
-        case BTN_B:
-        case BTN_F: {
+        case BTN_B: {
             pulse_trigger_out(1, mem_data()->ch_timings[1]);
             pulse_trigger_led(1, mem_data()->ch_timings[1]);
             pulse_trigger_led(5, mem_data()->ch_timings[1]);
             break;
         }
 
-        case BTN_C:
-        case BTN_G: {
+        case BTN_C: {
             pulse_trigger_out(2, mem_data()->ch_timings[2]);
             pulse_trigger_led(2, mem_data()->ch_timings[2]);
             pulse_trigger_led(6, mem_data()->ch_timings[2]);
             break;
+        }
+
+        case BTN_E: {
+            // TODO mute/unmute according to rec param
+            return; // not recording sequence!
+        }
+
+        case BTN_F: {
+            // TODO mute/unmute according to rec param
+            return; // not recording sequence!
+        }
+
+        case BTN_G: {
+            // TODO mute/unmute according to rec param
+            return; // not recording sequence!
         }
 
         default: {

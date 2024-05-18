@@ -188,13 +188,17 @@ static void ui_buttons_loopstation(enum buttons btn, bool val) {
     switch (btn) {
         case BTN_A:
         case BTN_B:
-        case BTN_C:
-        case BTN_E:
-        case BTN_F:
-        case BTN_G: {
+        case BTN_C: {
             if (val) {
                 sequence_handle_button_loopstation(btn, rec_held_down);
             }
+            break;
+        }
+
+        case BTN_E:
+        case BTN_F:
+        case BTN_G: {
+            sequence_handle_button_loopstation(btn, val);
             break;
         }
 
