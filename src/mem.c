@@ -17,6 +17,7 @@
  */
 
 #include <string.h>
+#include <inttypes.h>
 
 #include "pico/flash.h"
 
