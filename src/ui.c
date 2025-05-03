@@ -283,7 +283,7 @@ void ui_encoder(int32_t val) {
                 sequence_init();
 
                 // turn off all LEDs
-                for (uint i = 0; i < LED_COUNT; i++) {
+                for (uint i = 0; i < led_count(); i++) {
                     led_set(i, false);
                 }
 
@@ -294,7 +294,7 @@ void ui_encoder(int32_t val) {
                     led_set(NUM_CHANNELS, true);
                     led_set(NUM_CHANNELS + 4, true);
                 } else if (machine_mode == MODE_DRUMMACHINE) {
-                    sequence_set_beats(LED_COUNT);
+                    sequence_set_beats(led_count());
                     sequence_set_bpm(120);
                     sequence_set_bank(0);
                     sequence_set_channel(0);

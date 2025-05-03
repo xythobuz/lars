@@ -37,6 +37,14 @@ static uint32_t max_banks_currently = 0;
 static uint32_t channel = 0;
 static bool button_held[NUM_BTNS] = {0};
 
+// LED PWM brightness
+enum led_dimmer_types {
+    DIM_HIGH = 255, // currently active beat
+    DIM_MID = 80, // beat active in current channel
+    DIM_LOW = 16, // beat active in another channel
+    DIM_OFF = 0, // beat inactive
+};
+
 /*
  * 'bank' has a dual meaning here. this is a bit fugly.
  *
@@ -265,7 +273,7 @@ void sequence_handle_button_drummachine(enum buttons btn) {
         case BTN_F:
         case BTN_G:
         case BTN_H: {
-            uint32_t beat = (btn - BTN_A) + bank * LED_COUNT;
+            uint32_t beat = (btn - BTN_A) + bank * led_count();
             bool val = !sequence_get(beat, 1 << channel, 0);
             sequence_set(beat, 1 << channel, val, 0);
             break;
@@ -309,8 +317,24 @@ void sequence_run(void) {
         if (i >= beats) i = 0;
 
         if (ui_get_machinemode() == MODE_DRUMMACHINE) {
-            led_set(last_i, false);
-            led_set(i, true);
+            // turn off "previous" led, or dim it, if it is set in another bank
+            enum led_dimmer_types dim = DIM_OFF;
+            for (uint b = 0; b < (MAX_BEATS / led_count()); b++) {
+                uint n = b * led_count();
+                for (uint ch = 0; ch < NUM_CHANNELS; ch++) {
+                    if (sequence_get(n + (last_i % led_count()), (1 << ch), 0)) {
+                        if (ch == channel) {
+                            dim = DIM_MID;
+                            break;
+                        }
+                        dim = DIM_LOW;
+                    }
+                }
+            }
+            led_dim(last_i, dim);
+
+            // always turn on "currrent" led
+            led_dim(i, DIM_HIGH);
         }
 
         for (uint ch = 0; ch < NUM_CHANNELS; ch++) {

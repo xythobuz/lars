@@ -1,7 +1,7 @@
 /*
  * pulse.c
  *
- * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2024 - 2025 Thomas Buck (thomas@xythobuz.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 #include "pulse.h"
 
 static uint32_t out_time[NUM_CHANNELS] = {0};
-static uint32_t led_time[LED_COUNT] = {0};
+static uint32_t led_time[MAX_LED_COUNT] = {0};
 
 static void pulse_trigger(uint32_t i, uint32_t t_ms, bool out) {
     uint32_t off_t = t_ms + to_ms_since_boot(get_absolute_time());
@@ -39,8 +39,8 @@ static void pulse_trigger(uint32_t i, uint32_t t_ms, bool out) {
         }
     } else {
         led_set(i, true);
-        if (led_time[i % LED_COUNT] == 0) {
-            led_time[i % LED_COUNT] = off_t;
+        if (led_time[i % MAX_LED_COUNT] == 0) {
+            led_time[i % MAX_LED_COUNT] = off_t;
         } else {
             debug("skip retrigger led %"PRIu32, i);
         }
@@ -67,7 +67,7 @@ void pulse_run(void) {
         }
     }
 
-    for (uint i = 0; i < LED_COUNT; i++) {
+    for (uint i = 0; i < MAX_LED_COUNT; i++) {
         if (led_time[i] != 0) {
             if (led_time[i] <= now) {
                 led_set(i, false);

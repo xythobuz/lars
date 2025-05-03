@@ -20,7 +20,7 @@
 #define __CONFIG_H__
 
 #define VERSION_MAJOR 1
-#define VERSION_MINOR 0
+#define VERSION_MINOR 1
 
 #define WATCHDOG_PERIOD_MS 100
 #define LOGO_INIT_MS 1000

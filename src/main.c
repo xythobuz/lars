@@ -136,17 +136,17 @@ static void animate_boot_combos(void) {
         led_set(0, false);
     } else {
         // show splash for a bit and animate LEDs
-        for (uint i = 0; i < LED_COUNT; i++) {
+        for (uint i = 0; i < led_count(); i++) {
             watchdog_update();
             usb_run();
             cnsl_run();
             led_set(i, true);
-            sleep_ms_wd(mem_data()->boot_anim_ms / LED_COUNT);
+            sleep_ms_wd(mem_data()->boot_anim_ms / led_count());
         }
     }
 
     // turn off LEDs at end of init
-    for (uint i = 0; i < LED_COUNT; i++) {
+    for (uint i = 0; i < led_count(); i++) {
         led_set(i, false);
     }
 }

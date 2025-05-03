@@ -1,7 +1,7 @@
 /*
  * led.h
  *
- * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2024 - 2025 Thomas Buck (thomas@xythobuz.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#if 0
-#define LED_COUNT 4
-#else
-#define LED_COUNT 8
-#endif
+#define MAX_LED_COUNT 8
 
 void led_init(void);
+uint8_t led_count(void);
+
 void led_set(uint32_t i, bool v);
+void led_dim(uint32_t i, uint8_t v);
+
 void ch_set(uint32_t i, bool v);
 
 #endif // __LED_H__
