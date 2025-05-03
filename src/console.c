@@ -16,7 +16,6 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
-#include <inttypes.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdio.h>

@@ -17,7 +17,6 @@
  */
 
 #include <stdio.h>
-#include <inttypes.h>
 #include "pico/stdlib.h"
 
 #include "led.h"
