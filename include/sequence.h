@@ -1,7 +1,7 @@
 /*
  * sequence.h
  *
- * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2024 - 2025 Thomas Buck (thomas@xythobuz.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ void sequence_set_beats(uint32_t new_beats);
 uint32_t sequence_get_beats(void);
 
 void sequence_set_bank(uint32_t new_bank);
+void sequence_copy_bank(uint32_t new_bank);
 uint32_t sequence_get_bank(void);
 
 void sequence_set_channel(uint32_t new_channel);

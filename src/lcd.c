@@ -1,7 +1,7 @@
 /*
  * lcd.c
  *
- * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2024 - 2025 Thomas Buck (thomas@xythobuz.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  * See <http://www.gnu.org/licenses/>.
  */
 
+#include <pico/version.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -199,16 +200,19 @@ void lcd_draw_version(void) {
     char hw_id_str[42] = {0};
     if (hw_type == HW_PROTOTYPE) {
         snprintf(hw_id_str, sizeof(hw_id_str) - 1,
-                 "HW Prototype");
+                 "LARS HW: Proto");
     } else if (hw_type == HW_V2) {
         snprintf(hw_id_str, sizeof(hw_id_str) - 1,
-                 "HW V2");
+                 "LARS HW: V2");
     } else {
         snprintf(hw_id_str, sizeof(hw_id_str) - 1,
-                 "HW unknown %X", hw_type);
+                 "LARS HW: ?? %X", hw_type);
     }
     ssd1306_draw_string(&disp, 0, FONT_HEIGHT * 2 + 1 + (FONT_HEIGHT + 1) * 3, 1,
                         hw_id_str);
+
+    ssd1306_draw_string(&disp, 0, FONT_HEIGHT * 2 + 1 + (FONT_HEIGHT + 1) * 4, 1,
+                        "Pico SDK: " PICO_SDK_VERSION_STRING);
 
     ssd1306_show(&disp);
 }

@@ -1,7 +1,7 @@
 /*
  * sequence.c
  *
- * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2024 - 2025 Thomas Buck (thomas@xythobuz.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,17 @@ static uint32_t max_banks_currently = 0;
 static uint32_t channel = 0;
 static bool button_held[NUM_BTNS] = {0};
 
-static enum channels sequence[MAX_BEATS] = {0};
+/*
+ * 'bank' has a dual meaning here. this is a bit fugly.
+ *
+ * In drum-machine mode, the bank means which part of the sequence
+ * is shown on the available LEDs / buttons.
+ * This is always using sequence[0][n]
+ *
+ * In loop-station mode it actually means the sequence[bank][n].
+ */
+
+static enum channels sequence[MAX_BANKS][MAX_BEATS] = {0};
 
 void sequence_init(void) {
     us_per_beat = 0;
@@ -47,8 +57,10 @@ void sequence_init(void) {
     last_i = 0;
     max_banks_currently = (beats + (NUM_BTNS - 1)) / NUM_BTNS;
 
-    for (uint i = 0; i < MAX_BEATS; i++) {
-        sequence[i] = 0;
+    for (uint b = 0; b < MAX_BANKS; b++) {
+        for (uint i = 0; i < MAX_BEATS; i++) {
+            sequence[b][i] = 0;
+        }
     }
 }
 
@@ -85,6 +97,15 @@ void sequence_set_bank(uint32_t new_bank) {
     bank = (b < max_banks_currently) ? b : 0;
 }
 
+void sequence_copy_bank(uint32_t new_bank) {
+    uint32_t prev = bank;
+    sequence_set_bank(new_bank);
+
+    for (uint i = 0; i < MAX_BEATS; i++) {
+        sequence[bank][i] = sequence[prev][i];
+    }
+}
+
 uint32_t sequence_get_bank(void) {
     return bank;
 }
@@ -101,19 +122,19 @@ uint64_t sequence_get_us(void) {
     return us_per_beat;
 }
 
-static void sequence_set(uint32_t beat, enum channels ch, bool value) {
+static void sequence_set(uint32_t beat, enum channels ch, bool value, uint32_t sel_bank) {
     if (beat < MAX_BEATS) {
         if (value) {
-            sequence[beat] |= ch;
+            sequence[sel_bank][beat] |= ch;
         } else {
-            sequence[beat] &= ~ch;
+            sequence[sel_bank][beat] &= ~ch;
         }
     }
 }
 
-static bool sequence_get(uint32_t beat, enum channels ch) {
+static bool sequence_get(uint32_t beat, enum channels ch, uint32_t sel_bank) {
     if (beat < MAX_BEATS) {
-        return (sequence[beat] & ch) != 0;
+        return (sequence[sel_bank][beat] & ch) != 0;
     }
     return false;
 }
@@ -177,18 +198,28 @@ void sequence_handle_button_loopstation(enum buttons btn, bool val) {
             }
 
             if (button_held[BTN_H]) {
-                // right REC: clear all loops in all banks
-                // TODO other banks
+                // right REC: clear all loops in all banks, including length
                 sequence_init();
             } else if (button_held[BTN_D]) {
                 // left REC: clear the current loop, including the length
-                sequence_init();
+                us_per_beat = 0;
+                for (uint i = 0; i < MAX_BEATS; i++) {
+                    sequence[bank][i] = 0;
+                }
             } else if (button_held[BTN_E] || button_held[BTN_F] || button_held[BTN_G]) {
                 // channel mute buttons: clear only this channel in the current loop
-                // TODO
+                enum channels to_del = 0;
+                if (button_held[BTN_E]) to_del |= CH1;
+                if (button_held[BTN_F]) to_del |= CH2;
+                if (button_held[BTN_G]) to_del |= CH3;
+                for (uint i = 0; i < MAX_BEATS; i++) {
+                    sequence_set(i, to_del, false, bank);
+                }
             } else {
                 // on its own: clear all channels of the current loop, keeping the set length
-                // TODO
+                for (uint i = 0; i < MAX_BEATS; i++) {
+                    sequence[bank][i] = 0;
+                }
             }
 
             ui_redraw();
@@ -204,17 +235,17 @@ void sequence_handle_button_loopstation(enum buttons btn, bool val) {
     if ((button_held[BTN_D] || button_held[BTN_H]) && val) {
         switch (btn) {
             case BTN_A: {
-                sequence_set(last_i, CH_KICK, true);
+                sequence_set(last_i, CH_KICK, true, bank);
                 break;
             }
 
             case BTN_B: {
-                sequence_set(last_i, CH_SNARE, true);
+                sequence_set(last_i, CH_SNARE, true, bank);
                 break;
             }
 
             case BTN_C: {
-                sequence_set(last_i, CH_HIHAT, true);
+                sequence_set(last_i, CH_HIHAT, true, bank);
                 break;
             }
 
@@ -236,8 +267,16 @@ void sequence_handle_button_drummachine(enum buttons btn) {
         case BTN_G:
         case BTN_H: {
             uint32_t beat = (btn - BTN_A) + bank * LED_COUNT;
-            bool val = !sequence_get(beat, 1 << channel);
-            sequence_set(beat, 1 << channel, val);
+            bool val = !sequence_get(beat, 1 << channel, 0);
+            sequence_set(beat, 1 << channel, val, 0);
+            break;
+        }
+
+        case BTN_CLEAR: {
+            // clear current channel
+            for (uint i = 0; i < MAX_BEATS; i++) {
+                sequence_set(i, 1 << channel, false, 0);
+            }
             break;
         }
 
@@ -281,7 +320,8 @@ void sequence_run(void) {
                 continue;
             }
 
-            if (sequence[i] & (1 << ch)) {
+            uint32_t b = (ui_get_machinemode() == MODE_DRUMMACHINE) ? 0 : bank;
+            if (sequence[b][i] & (1 << ch)) {
                 // trigger channel solenoid
                 pulse_trigger_out(ch, mem_data()->ch_timings[ch]);
 
@@ -290,6 +330,8 @@ void sequence_run(void) {
                     pulse_trigger_led(ch, mem_data()->ch_timings[ch]);
                     pulse_trigger_led(ch + 4, mem_data()->ch_timings[ch]);
                 }
+
+
             }
         }
 

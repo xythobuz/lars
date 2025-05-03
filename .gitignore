@@ -24,3 +24,4 @@ docs/src/stl
 docs/src/inc_*.md
 
 3dprint/stl
+compile_commands.json

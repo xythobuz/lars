@@ -1,7 +1,7 @@
 /*
  * Extended from TinyUSB example code.
  *
- * Copyright (c) 2022 - 2023 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2022 - 2025 Thomas Buck (thomas@xythobuz.de)
  *
  * The MIT License (MIT)
  *
@@ -76,9 +76,14 @@ static void cdc_task(void) {
         char buf[cdc_buf_len + 1];
         uint32_t count = tud_cdc_read(buf, cdc_buf_len);
 
+#ifdef ENTER_BOOTLOADER_MAGIC
+        // TODO support magic byte in other places instead of offset 0?
         if ((count >= 1) && (buf[0] == ENTER_BOOTLOADER_MAGIC)) {
             reset_to_bootloader();
-        } else if (reroute_cdc_debug) {
+        } else
+#endif // ENTER_BOOTLOADER_MAGIC
+
+        if (reroute_cdc_debug) {
             debug_handle_input((const uint8_t *)buf, count);
         } else {
             cnsl_handle_input((const uint8_t *)buf, count);
@@ -107,6 +112,18 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts) {
 
     last_dtr = dtr;
 }
+
+#ifdef ENTER_BOOTLOADER_BAUD
+
+// Invoked when line coding is change via SET_LINE_CODING
+void tud_cdc_line_coding_cb(uint8_t itf, cdc_line_coding_t const* p_line_coding) {
+    (void) itf;
+    if (p_line_coding->bit_rate == ENTER_BOOTLOADER_BAUD) {
+        reset_to_bootloader();
+    }
+}
+
+#endif // ENTER_BOOTLOADER_BAUD
 
 // invoked when CDC interface received data from host
 void tud_cdc_rx_cb(uint8_t itf) {

@@ -1,7 +1,7 @@
 /*
  * ui.c
  *
- * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2024 - 2025 Thomas Buck (thomas@xythobuz.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,8 @@ enum ui_settings {
 
     // loop station
     SETTING_SPEED,
+    SETTING_BANK_SELECT,
+    SETTING_BANK_COPY,
 
     // drum machine
     SETTING_BPM,
@@ -57,25 +59,25 @@ static bool allowed_settings[MACHINE_NUM_MODES][SETTING_NUM_MODES] = {
     // MODE_LOOPSTATION
     {
         true, // SETTING_MODE
-        true,
-        false, false, false, false,
-        false, false,
+        true, true, true, // SETTING_SPEED, SETTING_BANK_SELECT, SETTING_BANK_COPY
+        false, false, false, false, // SETTING_BPM, SETTING_LENGTH, SETTING_BANK, SETTING_CHANNEL
+        false, false, // SETTING_CH_RX, SETTING_CH_TX
     },
 
     // MODE_DRUMMACHINE
     {
         true, // SETTING_MODE
-        false,
-        true, true, true, true,
-        false, false,
+        false, false, false, // SETTING_SPEED, SETTING_BANK_SELECT, SETTING_BANK_COPY
+        true, true, true, true, // SETTING_BPM, SETTING_LENGTH, SETTING_BANK, SETTING_CHANNEL
+        false, false, // SETTING_CH_RX, SETTING_CH_TX
     },
 
     // MODE_MIDI
     {
         true, // SETTING_MODE
-        false,
-        false, false, false, false,
-        true, true,
+        false, false, false, // SETTING_SPEED, SETTING_BANK_SELECT, SETTING_BANK_COPY
+        false, false, false, false, // SETTING_BPM, SETTING_LENGTH, SETTING_BANK, SETTING_CHANNEL
+        true, true, // SETTING_CH_RX, SETTING_CH_TX
     },
 };
 
@@ -85,6 +87,7 @@ static uint32_t last_bat_fetch = 0;
 static float last_voltage = 0.0f;
 static float last_percentage = 0.0f;
 static uint8_t midi_rx = 0, midi_tx = 0;
+static uint32_t bank_select_num = 0, bank_copy_num = 0;
 
 enum machine_modes ui_get_machinemode(void) {
     return machine_mode;
@@ -153,6 +156,18 @@ void ui_redraw(void) {
             break;
         }
 
+        case SETTING_BANK_SELECT: {
+            snprintf(mode, sizeof(mode) - 1, "Sel-Bnk:");
+            snprintf(val, sizeof(val) - 1, "%"PRIu32, bank_select_num);
+            break;
+        }
+
+        case SETTING_BANK_COPY: {
+            snprintf(mode, sizeof(mode) - 1, "Cpy-Bnk:");
+            snprintf(val, sizeof(val) - 1, "%"PRIu32, bank_copy_num);
+            break;
+        }
+
         case SETTING_CH_RX: {
             snprintf(mode, sizeof(mode) - 1, "Rx-Ch:");
             snprintf(val, sizeof(val) - 1, "%"PRIu8, midi_rx + 1);
@@ -187,10 +202,24 @@ static void ui_buttons(enum buttons btn, bool val) {
     switch (btn) {
         case BTN_CLICK: {
             if (val) {
+                enum ui_settings prev_setting = ui_setting;
+
                 // only allow settings for this mode
                 do {
                     ui_setting = (ui_setting + 1) % SETTING_NUM_MODES;
                 } while (!allowed_settings[machine_mode][ui_setting]);
+
+                if (prev_setting == SETTING_BANK_COPY) {
+                    sequence_copy_bank(bank_copy_num);
+                } else if (prev_setting == SETTING_BANK_SELECT) {
+                    sequence_set_bank(bank_select_num);
+                }
+
+                if (ui_setting == SETTING_BANK_COPY) {
+                    bank_copy_num = sequence_get_bank();
+                } else if (ui_setting == SETTING_BANK_SELECT) {
+                    bank_select_num = sequence_get_bank();
+                }
 
                 ui_redraw();
             }
@@ -212,7 +241,7 @@ static void ui_buttons(enum buttons btn, bool val) {
                 }
 
                 case MODE_MIDI: {
-                    if (val) {
+                    if (val && (btn != BTN_CLEAR)) {
                         usb_midi_tx(midi_tx, btn - BTN_A, 0x7F);
                         pulse_trigger_led(btn - BTN_A, mem_data()->ch_timings[0]);
                     }
@@ -294,6 +323,19 @@ void ui_encoder(int32_t val) {
             int32_t tmp = sequence_get_bank() + val;
             KEEP_IN_RANGE(tmp, 0, (int32_t)sequence_get_max_banks());
             sequence_set_bank(tmp);
+            break;
+        }
+
+        case SETTING_BANK_SELECT: {
+            int32_t tmp = bank_select_num + val;
+            KEEP_IN_RANGE(tmp, 0, (int32_t)sequence_get_max_banks());
+            break;
+        }
+
+        case SETTING_BANK_COPY: {
+            int32_t tmp = bank_copy_num + val;
+            KEEP_IN_RANGE(tmp, 0, (int32_t)sequence_get_max_banks());
+            break;
             break;
         }
 

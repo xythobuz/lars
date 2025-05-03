@@ -17,6 +17,10 @@ Revision 2 has changed this to be compatible to THT as well.
 Revision 1 and 2 are missing diodes on the button matrix.
 So when holding down three or more buttons simultaneously you get ghosting on other buttons.
 
+Depending on the solenoids you may reach a situation where not all channels can be properly triggered simultaneously.
+
+**To Do**: try to improve this by adding more capacitance to the power rail or between the voltage regulators and the mosfets?
+
 ## Bill of Materials
 
 These are all the parts required to assemble the V2 PCB.

@@ -1,7 +1,7 @@
 /*
  * mem.c
  *
- * Copyright (c) 2023 - 2024 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2023 - 2025 Thomas Buck (thomas@xythobuz.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,8 +41,10 @@ struct mem_contents {
 static const struct mem_contents data_defaults = MEM_CONTENTS_INIT;
 static struct mem_contents data_ram = data_defaults;
 static const uint8_t *data_flash = (const uint8_t *)(XIP_BASE + EEPROM_FLASH_OFFSET);
+static uint8_t page_buffer[FLASH_PAGE_SIZE] = {0};
 
-static_assert(sizeof(struct mem_contents) < FLASH_SECTOR_SIZE,
+#define MEM_DATA_SIZE sizeof(struct mem_contents)
+static_assert(MEM_DATA_SIZE < FLASH_SECTOR_SIZE,
               "Config needs to fit inside a flash sector");
 
 static uint32_t calc_checksum(const struct mem_contents *data) {
@@ -86,29 +88,34 @@ void mem_load(void) {
     const struct mem_contents *flash_ptr = (const struct mem_contents *)data_flash;
 
     if (flash_ptr->version == MEM_VERSION) {
-        debug("found matching config (0x%02X)", flash_ptr->version);
+        debug("found matching config (0x%02"PRIX8")", flash_ptr->version);
 
         uint32_t checksum = calc_checksum(flash_ptr);
         if (checksum != flash_ptr->checksum) {
-            debug("invalid checksum (0x%08lX != 0x%08lX)", flash_ptr->checksum, checksum);
+            debug("invalid checksum (0x%08"PRIX32" != 0x%08"PRIX32")", flash_ptr->checksum, checksum);
         } else {
             if (flash_ptr->data.ch_count != NUM_CHANNELS) {
                 debug("invalid channel count (0x%"PRIu32" != 0x%d)", flash_ptr->data.ch_count, NUM_CHANNELS);
             } else {
-                debug("loading from flash (0x%08lX)", checksum);
+                debug("loading from flash (0x%08"PRIX32")", checksum);
                 data_ram = *flash_ptr;
             }
         }
     } else {
-        debug("invalid config (0x%02X != 0x%02X)", flash_ptr->version, MEM_VERSION);
+        debug("invalid config (0x%02"PRIX8" != 0x%02X)", flash_ptr->version, MEM_VERSION);
     }
 }
 
 static void mem_write_flash(void *param) {
+    // we erase a 4K sector (FLASH_SECTOR_SIZE), but...
     flash_range_erase(EEPROM_FLASH_OFFSET, FLASH_SECTOR_SIZE);
 
-    // TODO only need to write with length multiple of FLASH_PAGE_SIZE
-    flash_range_program(EEPROM_FLASH_OFFSET, param, FLASH_SECTOR_SIZE);
+    // ...can write in 256 byte pages (FLASH_PAGE_SIZE)
+    for (uint32_t off = 0; off < MEM_DATA_SIZE; off += FLASH_PAGE_SIZE) {
+        memset(page_buffer, 0xFF, FLASH_PAGE_SIZE);
+        memcpy(page_buffer, param + off, MIN(FLASH_PAGE_SIZE, MEM_DATA_SIZE - off));
+        flash_range_program(EEPROM_FLASH_OFFSET + off, page_buffer, FLASH_PAGE_SIZE);
+    }
 }
 
 void mem_write(void) {
@@ -119,7 +126,7 @@ void mem_write(void) {
 
     data_ram.checksum = calc_checksum(&data_ram);
 
-    debug("writing new data (0x%08lX)", data_ram.checksum);
+    debug("writing new data (0x%08"PRIX32")", data_ram.checksum);
     int r = flash_safe_execute(mem_write_flash, &data_ram, FLASH_LOCK_TIMEOUT_MS);
     if (r != PICO_OK) {
         debug("error calling mem_write_flash: %d", r);

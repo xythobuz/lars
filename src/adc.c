@@ -1,7 +1,7 @@
 /*
  * adc.c
  *
- * Copyright (c) 2024 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2024 - 2025 Thomas Buck (thomas@xythobuz.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,8 +55,8 @@ static float bat_read(void) {
 
 void bat_init(void) {
     adc_init();
-    adc_gpio_init( ADC_PIN);
-    adc_select_input( ADC_NUM);
+    adc_gpio_init(ADC_PIN);
+    adc_select_input(ADC_NUM);
     filtered = bat_read();
 }
 

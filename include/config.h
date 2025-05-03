@@ -1,7 +1,7 @@
 /*
  * config.h
  *
- * Copyright (c) 2022 - 2024 Thomas Buck (thomas@xythobuz.de)
+ * Copyright (c) 2022 - 2025 Thomas Buck (thomas@xythobuz.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,16 +19,16 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
-#define VERSION_MAJOR 0
-#define VERSION_MINOR 1
+#define VERSION_MAJOR 1
+#define VERSION_MINOR 0
 
 #define WATCHDOG_PERIOD_MS 100
 #define LOGO_INIT_MS 1000
 #define FLASH_LOCK_TIMEOUT_MS 500
 #define CH_GPIO_DEFAULT_MS 42
 
-// ASCII 0x18 = CAN (cancel)
-#define ENTER_BOOTLOADER_MAGIC 0x18
+#define ENTER_BOOTLOADER_MAGIC 0x18 // ASCII 0x18 = CAN (cancel)
+#define ENTER_BOOTLOADER_BAUD 1200 // support picotool-like magic baudrate reset
 
 //#define DISABLE_CDC_DTR_CHECK
 #define DEBOUNCE_DELAY_MS 5
